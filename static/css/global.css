@@ -1,0 +1,100 @@
+.x3n_header{
+    background: #000;
+    height: 32px;
+    opacity: 1;
+    font-family: 'Gibson-Regular';
+    text-transform: uppercase;
+}
+.x3n_header_logo_container{
+	margin: 0 0 0 9px;
+	display: inline-block;
+    margin-top: 5px;
+}
+.x3n_header img.logo{
+    margin-bottom: 3px; 
+}
+img.logo{
+    width:25px;
+    cursor:pointer;
+}
+.header-row td{
+	text-transform: uppercase;
+	color: #968aa8;
+	font-weight: bold;
+	text-align: center;
+}
+.icon{
+	height:32px;
+	cursor:pointer;
+}
+.content-table{
+	color:#D8D6DA;
+	font-size:85%;
+}
+.tab-pane{
+	padding-top:20px;
+}
+.content-table tr{
+	font-size:130%;
+}
+.content-table tr:not(.header-row){
+	cursor:pointer;
+}
+#portfolio-nav{
+	margin-bottom:20px;
+}
+.numerical{
+	text-align:right;
+}
+#stock-chart{
+	cursor:pointer;
+	width:100%;
+}
+/*Chart Form Controls*/
+.form-group{
+	width:100%;
+}
+#chart-period{
+	width:110px;
+}
+#chart-period-type{
+	width:100px;
+}
+#update-chart{
+	margin-left:20%
+}
+#current-stock-chart{
+	margin-top:25px;
+	margin-bottom:25px;
+	text-align:center;
+}
+#modal-btn{
+	display:none;
+}
+#modal-container{
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    margin-top: -25px;
+    margin-left: -200px;
+    padding: 20px;
+}
+.hidden{
+	display:none;
+}
+#loading_container{
+    width: 5000px;
+    height: 5000px;
+    background-color: rgba(0,0,0,.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 100000;
+}
+#loading_spinner{
+    width: 30%;
+    position: fixed;
+    top: 50%;
+    left: 35%;
+}
