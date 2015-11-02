@@ -1,7 +1,5 @@
-<?php
-    $project_name = 'Finance Dashboard';
-?>
-
+<?php $project_name = 'Finance Dashboard';?>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <html>
 	<title><?php echo $project_name ?></title>
 	<head>
@@ -12,8 +10,14 @@
 		<script src="static/libs/jquery-2.1.4.min.js"></script>
 		<script src="static/libs/jquery-ui.js"></script>
 		<script src="static/libs/bootstrap.js"></script>
-		<!--<script src="static/libs/autocomplete.js"></script>-->
-		<script src="static/libs/typeahead.jquery.js"></script>
+		<script src="js/global_vars_funcs.js"></script>
+		<!--Vector Map Includes-->
+		<script src="static/libs/jquery-jvectormap-2.0.4.min.js"></script>
+		<script src="static/libs/jquery-jvectormap-north_america-mill.js"></script>
+		<script src="static/libs/jquery-jvectormap-europe-mill.js"></script>
+		<script src="static/libs/jquery-jvectormap-asia-mill.js"></script>
+		<script src="js/jvectormap_maker.js"></script>
+		<link rel="stylesheet" type="text/css" href="static/css/jquery-jvectormap-2.0.4.css">
 		<!--Standard Style Includes-->
 		<link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
 	</head>
@@ -36,6 +40,7 @@
 			  <li class="active"><a data-toggle="tab" href="#portfolio">Portfolio</a></li>
 			  <li><a data-toggle="tab" href="#budget">Budget</a></li>
 			  <li><a data-toggle="tab" href="#cashflow">Cashflow</a></li>
+			  <li><a data-toggle="tab" href="#loans">Loans</a></li>
 			</ul>
 		  </div>
 		</div>
@@ -53,70 +58,62 @@
 							Portfolio <img id="update-portfolio"  class="icon" src="./static/images/refresh.png">
 						</span>
 					</h1>
+					<div id="map-container"></div>
 					<div id="portfolio-nav">
 						<ul class="nav nav-tabs"></ul>
 					</div>
 					<div id="portfolio-content" class="tab-content"></div>
 				</div>
-				<div id="budget" class="tab-pane fade"></div>
+				<div id="budget" class="tab-pane fade">
+					<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#transaction-entry-modal">
+						New Transaction
+					</button>
+					<h1>
+					<nav>
+						<ul class="pager">
+							<li><span id="budget-month-retreat" class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></li>
+							<span id="budget-month"></span>
+							<li><span id="budget-month-advance" class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></li>
+					  </ul>
+					</nav>
+					</h1>
+				</div>
 				<div id="cashflow" class="tab-pane fade"></div>
+				<div id="loans" class="tab-pane fade"></div>
 				<div id="loading_container"><img id="loading_spinner" src="static/images/progress.gif"></div>
 			</div>
 		</div>
-<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////  MODAL  /////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
-		<button type="button" id="modal-btn" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modal-container">Open Modal</button>
-		<div id="modal-container" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title"></h4>
-						</div>
-						<div class="modal-body">
-							<div id="chart-container" class="form-inline">
-								<div class="form-group">
-									<input type="number" class="form-control" id="chart-period" placeholder="Period">
-									<select class="form-control" id="chart-period-type">
-										<option value="d">Days</option>
-										<option value="M">Month</option>
-										<option value="Y">Year</option>
-									</select>
-									<img id="update-chart" class="icon" src="./static/images/refresh.png">
-								</div>
-								<p id="current-stock-chart"></p>
-								<div><img id="stock-chart"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		
+		<!-- MODALS! -->
+		<?php include 'static/php/modals.php';?>
 	</body>
 </html>
 
+<!--Post Load Includes-->
 <!--Main JS-->
 <script src="js/portfolio.js"></script>
+<script src="js/budget.js"></script>
 <script src="js/cashflow.js"></script>
+<script src="js/loans.js"></script>
 <!--Loading Screen-->
 <script>
+<!--NavBar Fix-->
+$('.navbar a').click(function() {
+    var navbar_toggle = $('.navbar-toggle');
+    if (navbar_toggle.is(':visible')) {
+        navbar_toggle.trigger('click');
+    }
+});
+<!--Tab URI Fix-->
 $(function(){
-	$(document).ajaxStart(function() {
-		$( "#loading_container" ).show();
-		$("body").css("overflow", "hidden");
-	});
-	
-    $(document).ajaxStop(function() {
-		$( "#loading_container" ).hide();
-		$("body").css("overflow", "auto");
-    }); 
+  var hash = window.location.hash;
+  hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+  $('.navbar-nav a').click(function (e) {
+    $(this).tab('show');
+    var scrollmem = $('body').scrollTop();
+    window.location.hash = this.hash;
+    $('html,body').scrollTop(scrollmem);
+  });
 });
 </script>
-
-<!-- For New Transaction div
-	<div id="account-search">
-		<input class="typeahead" type="text" placeholder="States of USA">
-	</div>
--->

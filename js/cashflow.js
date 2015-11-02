@@ -13,7 +13,8 @@ var get_net_worth = function(){
 	})
 	.done(function(data){
 		net_worth = $.parseJSON(data)[0].net_worth;
-		$('#cashflow').append("Networth: "+net_worth);
+		$('#cashflow').prepend("<div>Networth: "+net_worth+'</div>');
+		get_bill_data();
 	});
 }
 
@@ -28,82 +29,203 @@ var get_bill_data = function(){
 	})
 	.done(function(data){
 		bills = $.parseJSON(data);
-		//Generate Content-Table
+		//Generate Content-Tables
 		$('#cashflow').append(
 			'<div id="bills">'+
 				'<table class="table table-bordered table-hover table-striped table-condensed content-table">'+
 					'<tr class="row header-row"></tr>'+
+				'</table>'+
+			'</div>'+
+			'<div id="pay_periods">'+
+				'<table class="table table-bordered table-hover table-striped table-condensed content-table">'+
+					'<tr class="row header-row">'+
+						'<td>Pay Date</td>'+
+						'<td>Income</td>'+
+						'<td>Expenses</td>'+
+						'<td>Delta</td>'+
+						'<td>Cashflow</td>'+
+					'</tr>'+
 				'</table>'+
 			'</div>'
 		);
 		
 		//Generate Header Row
 		for(var attribute in bills[0]){
-			$('#cashflow .content-table .header-row').append(
+			$('#cashflow #bills .content-table .header-row').append(
 				'<td class="">'+attribute.replace(/_/,' ','g')+'</td>'
 			);
 		}
 		//Generate Content Rows
 		for(var i = 0; i < bills.length; i++){
-			$('#cashflow .content-table').append('<tr class="row">');
+			$('#cashflow #bills .content-table').append('<tr class="row">');
 			for(var attribute in bills[i]){
 				//var format_classes = attribute_formats[attribute]+hidden_attributes[attribute];
 				var value = bills[i][attribute];
 				if(isNull(value)){value = '';}
-				$('#cashflow .content-table .row').last().append('<td class="">'+value+'</td>')
+				$('#cashflow #bills .content-table .row').last().append('<td class="">'+value+'</td>')
 			}
-			$('#cashflow .content-table').append('</tr>');
+			$('#cashflow #bills .content-table').append('</tr>');
 		}
+		get_cashflow_data();
 	});
 }
-/*
-var update_portfolio = function (){
-	//Iterate Account Holders
-	for(var i = 0; i < accounts.length; i++){
-		holder = accounts[i].holder;
-		//Iterate Account Types
-		for(var ii = 0; ii < accounts[i].types.length; ii++){
-			type = accounts[i].types[ii];
-			//Clear #holder-type content-table
-			$('#'+holder+'-'+type+' .content-table').html('<tr class="row header-row"></tr>');
-			//Generate Header Row
-			for(var attribute in accounts[i][type][0]){
-				var format_classes = hidden_attributes[attribute];
-				$('#'+holder+'-'+type+' .content-table .header-row').append(
-					'<td class="'+format_classes+'">'+attribute.replace(/_/,' ','g').replace('perc','%')+'</td>'
-				);
-			}
-			//Iterate Holdings
-			for(var iii = 0; iii < accounts[i][type].length; iii++){
-				//Generate Content Rows
-				$('#'+holder+'-'+type+' .content-table').append('<tr class="row">');
-				for(var attribute in accounts[i][type][iii]){
-					var format_classes = attribute_formats[attribute]+hidden_attributes[attribute];
-					var value = accounts[i][type][iii][attribute];
-					if(isNull(value)){value = '';}
-					$('#'+holder+'-'+type+' .content-table .row').last().append('<td class="'+format_classes+'">'+value+'</td>')
-				}
-				$('#'+holder+'-'+type+' .content-table').append('</tr>');
-			}
-		}
-	}
-	$('.change, .percentage').each(function(){
-		var value = $(this).text();
-		switch(true){
-			case value > 0:
-				$(this).css("color", "#00ce00");
-				break;
-			case value < 0:
-				$(this).css("color", "red");
-				break;
-			case value == 0:
-				$(this).css("color", "white");
-		}
-	});
-};
-*/
 
-$(function(){
-	get_net_worth();
-	get_bill_data();
-});
+//Get Cashflow Data
+var get_cashflow_data = function(){
+	$.ajax({
+		url: "services/php_query_handler.php",
+		method: "GET",
+		data: {
+			"query": "sql/cashflow.sql"
+		}
+	})
+	.done(function(data){
+		cashflow = $.parseJSON(data)[0];
+		$('#cashflow').prepend("<div>Cash on hand: "+cashflow.bank+'</div>');
+		
+		//Generate Pay Period Object
+		var initial_pay_date = new Date('2015','00','09');
+		var two_weeks_ms = 14 * 86400000;
+		pay_periods = [
+			{
+				pay_period : new Date(initial_pay_date.getTime()),
+				"income" : 0,
+				"expenses" : 0,
+				"delta" : 0,
+				"cashflow" : 0
+			},{
+				pay_period : new Date(initial_pay_date.getTime()),
+				"income" : cashflow.payroll,
+				"expenses" : 0,
+				"delta" : 0,
+				"cashflow" : 0
+			},{
+				pay_period : new Date(initial_pay_date.getTime()),
+				"income" : (cashflow.payroll * 2).toFixed(2),
+				"expenses" : 0,
+				"delta" : 0,
+				"cashflow" : 0
+			}
+		];
+		pay_periods[0].pay_period.setTime(
+			two_weeks_ms*(
+				Math.floor(
+					(today.getTime()-initial_pay_date.getTime())
+					/
+					two_weeks_ms
+				)
+			) + initial_pay_date.getTime() + two_weeks_ms);
+		pay_periods[1].pay_period.setTime(pay_periods[0].pay_period.getTime()+two_weeks_ms);
+		pay_periods[2].pay_period.setTime(pay_periods[1].pay_period.getTime()+two_weeks_ms);
+		for(var i = 0; i < pay_periods.length; i++){
+			for(var ii = 0; ii < bills.length; ii++){
+				//Convert Due Days to Full Dates
+				if(bills[ii].due_day < today.getDate()){
+					bills[ii].due_date = new Date(today.getFullYear(), today.getMonth()+1, bills[ii].due_day);
+				}else{
+					bills[ii].due_date = new Date(today.getFullYear(), today.getMonth(), bills[ii].due_day);
+				}
+				if(bills[ii].due_date > today && bills[ii].due_date <= pay_periods[i].pay_period){
+					pay_periods[i].expenses += Number(bills[ii].amount);
+				}
+			}
+			pay_periods[i].delta = round(pay_periods[i].income - pay_periods[i].expenses,2);
+			pay_periods[i].expenses = round(pay_periods[i].expenses,2);
+			pay_periods[i].cashflow = round(Number(cashflow.bank) + Number(pay_periods[i].delta),2);
+			pay_periods[i].pay_period = date_iso(pay_periods[i].pay_period);
+		}
+		
+		//Generate Content Rows
+		var cashflow_attribute_formats = {
+			"pay_period":"",
+			"income":" numerical ",
+			"expenses":" numerical ",
+			"delta":" change numerical ",
+			"cashflow":" change numerical "
+		}
+		for(var i = 0; i < pay_periods.length; i++){
+			$('#cashflow #pay_periods .content-table').append('<tr class="row">');
+			for (attribute in pay_periods[i]){
+				var format_classes = cashflow_attribute_formats[attribute];
+				$('#cashflow #pay_periods .content-table .row').last().append('<td class="'+format_classes+'">'+pay_periods[i][attribute]+'</td>');
+			}
+			$('#cashflow #pay_periods .content-table').append('</tr>');
+		}
+		color_delta('.change');
+		get_annual_reports();
+	});	
+}
+
+
+//Get Annual Reports
+var get_annual_reports = function(){
+	//Generate Annual Revenue Report
+	$.ajax({
+		url: "services/php_query_handler.php",
+		method: "GET",
+		data: {
+			"query": "sql/annual_revenue.sql"
+		}
+	})
+	.done(function(data){
+		var attribute_formats = {
+			"fy14":" numerical ",
+			"fy15":" numerical ",
+			"delta":" change numerical ",
+			"fy14_pr":" numerical "
+		};
+		var hidden_attributes = {
+			"index":" hidden "
+		};
+		generate_standard_table('cashflow', 'annual_revenue', data, attribute_formats, hidden_attributes, true);
+		//Generate Annual Expenses Report
+		$.ajax({
+			url: "services/php_query_handler.php",
+			method: "GET",
+			data: {
+				"query": "sql/annual_expenses.sql"
+			}
+		})
+		.done(function(data){
+			var attribute_formats = {
+				"fy14":" numerical ",
+				"fy15":" numerical ",
+				"delta":" change numerical ",
+				"fy14_pr":" numerical "
+			};
+			var hidden_attributes = {
+				"index":" hidden "
+			};
+			generate_standard_table('cashflow', 'annual_expenses', data, attribute_formats, hidden_attributes, true);
+		});
+	});
+}
+
+$(function(){get_net_worth();});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

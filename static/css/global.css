@@ -17,40 +17,69 @@ img.logo{
     width:25px;
     cursor:pointer;
 }
-.header-row td{
+.icon{
+	height:32px;
+	cursor:pointer;
+}
+.glyphicon-chevron-right{
+	cursor:pointer;
+}
+.glyphicon-chevron-left{
+	cursor:pointer;
+}
+#budget-month{
+	display: inline-block;
+    width: 200px;
+}
+
+/*Content Table*/
+.content-table{
+	color:#5bc0de;
+	margin-top:20px;
+}
+.content-table tr{
+	font-size:100%;
+}
+.content-table td{
+	max-width:50px;
+	font-size:8px;
+}
+@media (min-width: 768px) {
+	.content-table td{
+		max-width:5000px;	
+		font-size:100%;
+	}
+}
+.content-table .header-row td{
 	text-transform: uppercase;
 	color: #968aa8;
 	font-weight: bold;
 	text-align: center;
 }
-.icon{
-	height:32px;
-	cursor:pointer;
-}
-.content-table{
-	color:#D8D6DA;
-	font-size:85%;
-}
-.tab-pane{
-	padding-top:20px;
-}
-.content-table tr{
-	font-size:130%;
-}
 .content-table tr:not(.header-row){
 	cursor:pointer;
 }
+.content-table tr:not(.header-row):hover{
+	color:#000;
+}
 #portfolio-nav{
 	margin-bottom:20px;
+	margin-top:20px;
 }
 .numerical{
 	text-align:right;
 }
-#stock-chart{
-	cursor:pointer;
-	width:100%;
+.title-row{
+	text-align: center;
+    text-transform: uppercase;
+	color: #5f9ea0;
+	font-weight: bold;
 }
-/*Chart Form Controls*/
+/*End Content Table*/
+
+
+
+/*Charts amd Maps Controls*/
 .form-group{
 	width:100%;
 }
@@ -68,8 +97,19 @@ img.logo{
 	margin-bottom:25px;
 	text-align:center;
 }
-#modal-btn{
-	display:none;
+#stock-chart{
+	cursor:pointer;
+	width:100%;
+}
+.map{
+	display:inline-block;
+	margin-left:5px; 
+}
+/*End Chart Form Controls*/
+
+/*Modal Objects*/
+.modal-btn{
+	display:none !important;
 }
 #modal-container{
     position: absolute;
@@ -98,3 +138,9 @@ img.logo{
     top: 50%;
     left: 35%;
 }
+#transaction-entry-modal .form-control{
+	margin-top:25px;
+	font-size:1.5em;
+	top:20%;
+}
+/*End Modal Objects*/

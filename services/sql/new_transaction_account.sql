@@ -1,0 +1,1 @@
+INSERT INTO tags (account, tag) values (lower('${account}$'),lower('${tag}$'))

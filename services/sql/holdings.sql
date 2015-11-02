@@ -24,7 +24,7 @@ UNION
 	sum(invested) as invested,
 	sum(value) as value,
 	sum(roi) as roi,
-	round(avg(roi_perc),2) as roi_perc,
+	round(((sum(value)-sum(invested))/sum(invested))*100,2) as roi_perc,
 	null as basis,
 	null as price,
 	sum(change) as change,

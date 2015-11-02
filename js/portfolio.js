@@ -5,6 +5,7 @@ portfolio_attribute_formats = {
 	"symbol":"",
 	"shares":" numerical ",
 	"invested":" numerical ",
+	"value":" numerical ",
 	"roi":" change numerical ",
 	"roi_perc":" change numerical ",
 	"basis":" numerical ",
@@ -15,13 +16,9 @@ portfolio_attribute_formats = {
 }
 portfolio_hidden_attributes = {
 	"roi":" mobile-hidden ",
-	"change":" mobile-hidden ",
+	"shares":" mobile-hidden ",
 	"last_updated":" mobile-hidden ",
 	"index":" hidden "
-}
-
-function isNull(e){
-    return ( e==null || e==undefined || String(e).toUpperCase()=="NULL" || e=="" || String(e).toUpperCase()=="UNDEFINED");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +64,6 @@ var get_holdings_data = function(){
 				.done(function(data){
 					accounts[i][accounts[i].types[ii]]=$.parseJSON(data);
 					holdings_loaded++;
-					console.log("total: "+total_holdings+" loaded: "+holdings_loaded);
 					//Once all holdings are loaded, generate main content
 					if(holdings_loaded==total_holdings){
 						if(init_flag == true){
@@ -117,12 +113,7 @@ var generate_tabs_pills = function(){
 			);
 		}
 	}
-	//Activate Init Tab-Pill
-	/*$('#portfolio-nav .nav-tabs li').eq(0).addClass("active");
-	$('#portfolio-content .tab-pane').eq(0).addClass("active in");
-	$('.nav-pills li').eq(0).addClass("active");
-	$('#portfolio-content .tab-pane .tab-pane').eq(0).addClass("active in");
-	*/update_portfolio();
+	update_portfolio();
 };
 
 var update_portfolio = function (){
@@ -155,24 +146,11 @@ var update_portfolio = function (){
 			}
 		}
 	}
-	$('.change, .percentage').each(function(){
-		var value = $(this).text();
-		switch(true){
-			case value > 0:
-				$(this).css("color", "#00ce00");
-				break;
-			case value < 0:
-				$(this).css("color", "red");
-				break;
-			case value == 0:
-				$(this).css("color", "white");
-		}
-	});
+	color_delta('.change, .percentage');
 };
 
 var update_stock_chart = function(symbol){
 	$('#stock-chart').attr({'src':'static/images/progress.gif', 'alt':'loading...'})
-	if(!symbol){var symbol = $('.modal-title').text();}
 	var symbol = symbol.toUpperCase();
 	var period = $('#chart-period').val();
 	var period_type = $('#chart-period-type').val();
@@ -188,26 +166,51 @@ var update_stock_chart = function(symbol){
 		var alt = 'https://www.google.com/finance?q=MUTF%3A'+symbol;
 	}
 	$('#stock-chart').attr({'src':stock_url, 'alt':alt})
-	$('.modal-title').text(symbol);
+	$('#stock-chart-modal .modal-title').text(symbol);
 }
 
 
 //On DOM Ready
-$(get_account_data());
+$(function(){
+	get_account_data();
+	map_maker();
+	//Save width to determine when map redraw necessary
+	init_width = $(window).width();
+});
+
+//On Window Resize
+$(window).resize(function(){
+	var current_width = $(window).width();
+	if (Math.abs(init_width-current_width)>150){
+		map_maker();
+		init_width = current_width;
+	}
+});
+
+//On Portfolio Tab Access
+$('.nav').bind('click', function(e){
+	var target = $(e.target).attr("href")
+	if(target=='#portfolio'){
+		console.log(target);
+		setTimeout(function(){map_maker()},1000);
+	}
+});
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////  EVENT HANDLERS  //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $('#update-portfolio').on('click', get_account_data);
-$('#chart-container').on('click', '#update-chart', function(){update_stock_chart();});
-
-
-$('#portfolio-content').on('click', '.content-table .row', function(){
-	var symbol = $(this).children("td").eq(0).html();
-	console.log(symbol);
+$('#chart-container').on('click', '#update-chart', function(){
+	var symbol = $('#stock-chart-modal .modal-title').text();
 	update_stock_chart(symbol);
-	$('#modal-btn').click();
+});
+
+
+$('#portfolio-content').on('click', '.content-table .row:not(.header-row)', function(){
+	var symbol = $(this).children("td").eq(0).html();
+	update_stock_chart(symbol);
+	$('#stock-chart-modal').modal('show');
 });
 
 $('#stock-chart').on('click',function(){
@@ -216,6 +219,37 @@ $('#stock-chart').on('click',function(){
 
 $(document).keyup(function(e){
 	if(e.keyCode == 13 && $(document.activeElement).attr("id") == "chart-period"){
-		update_stock_chart();
+		var symbol = $('#stock-chart-modal .modal-title').text();
+		update_stock_chart(symbol);
 	}
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
