@@ -4,19 +4,18 @@
 
 //Hide tag entry by default
 $('#transaction-tag').css('display','none');
-//Generate autocomplete array
+
+//Generate transaction account autocomplete array
 $(function(){
-	transaction_account_list = [];
 	$.ajax({
 		url: "services/php_query_handler.php",
 		method: "GET",
-		data: {
-			"query": "sql/transaction_accounts.sql"
-		}
+		data: {"query": "sql/transaction_accounts.sql"}
 	})
 	.done(function(data){
+		//Global Var - also used for transaction insertion
 		transaction_account_list = [];
-		data=$.parseJSON(data);
+		var data = $.parseJSON(data);
 		for(var i = 0; i < data.length; i++){
 			transaction_account_list.push(data[i].account);
 		};
@@ -35,43 +34,31 @@ $(function(){
 	});
 });
 
+//Generate transaction tag autocomplete array
+$(function(){
+	$.ajax({
+		url: "services/php_query_handler.php",
+		method: "GET",
+		data: {"query": "sql/transaction_tags.sql"}
+	})
+	.done(function(data){
+		var transaction_tag_list = [];
+		var data = $.parseJSON(data);
+		for(var i = 0; i < data.length; i++){
+			transaction_tag_list.push(data[i].tag);
+		};
+		$('#transaction-tag').autocomplete({
+			source: transaction_tag_list,
+			appendTo: "#transaction-tag-autocomplete"
+		});
+	});
+});
+
 $(function(){
 	//Declare global index for current viewed month and set name to selector
 	budget_month = today.getMonth();
 	$('#budget-month').text(monthNames[budget_month]);
 	//Expense data is first in a cascade of data requests and table creations
-	get_expense_data();
-});
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////  EVENT HANDLERS  /////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//Click on submit buttons triggers form submit
-$('#transaction-entry-modal').on('click','#submit-new-transaction', insert_transaction_handler);
-
-//Blank out all input boxes on click
-$('body').on("click", '.fresh-input', function(){
-	$(this).val('');
-});
-
-//Controls Month Selection and Data Pull
-$('#budget-month-retreat').on('click', function(){
-	if(budget_month == 0){
-		budget_month = 11;
-	}else{
-		budget_month -= 1;
-	}
-	$('#budget-month').text(monthNames[budget_month]);
-	get_expense_data();
-});
-$('#budget-month-advance').on('click', function(){
-	if(budget_month == 11){
-		budget_month = 0;
-	}else{
-		budget_month += 1;
-	}
-	$('#budget-month').text(monthNames[budget_month]);
 	get_expense_data();
 });
 
@@ -92,15 +79,14 @@ var get_expense_data = function(){
 	})
 	.done(function(data){
 		var attribute_formats = {
+			"tag":" uppercase ",
 			"expected":" numerical ",
 			"actual":" numerical ",
 			"delta":" change numerical "
 		}
-		var hidden_attributes = {
-			"index":" hidden "
-		}
-		generate_standard_table('budget', 'expenses', data, attribute_formats, hidden_attributes, true);
-		get_recent_transactions();
+		var data = $.parseJSON(data);
+		generate_standard_table('budget', 'expenses', data, attribute_formats, true);
+		get_monthly_transactions();
 	});
 }
 
@@ -109,21 +95,25 @@ var get_expense_data = function(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 //Get Recent Transactions
-var get_recent_transactions = function(){
+var get_monthly_transactions = function(){
 	$.ajax({
 		url: "services/php_query_handler.php",
 		method: "GET",
 		data: {
-			"query": "sql/recent_transactions.sql",
+			"query": "sql/monthly_transactions.sql",
 			"year": today.getFullYear(),
-			"month": today.getMonth()+1
+			"month": budget_month+1
 		}
 	})
 	.done(function(data){
 		var attribute_formats = {
-			"amount":" numerical change "
-		}
-		generate_standard_table('budget', 'recent_transactions', data, attribute_formats, {});
+			"account":" uppercase ",
+			"amount":" numerical change ",
+			"type":" uppercase centered ",
+			"date":" centered "
+		};
+		var data = $.parseJSON(data);
+		generate_standard_table('budget', 'transactions', data, attribute_formats, false);
 	});
 }
 
@@ -186,29 +176,34 @@ var insert_transaction = function(account, amount, type, date){
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////  EVENT HANDLERS  /////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Click on submit buttons triggers form submit
+$('#transaction-entry-modal').on('click','#submit-new-transaction', insert_transaction_handler);
 
+//Blank out all input boxes on click
+$('body').on("click", '.fresh-input', function(){
+	$(this).val('');
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Controls Month Selection and Data Pull
+$('#budget-month-retreat').on('click', function(){
+	if(budget_month == 0){
+		budget_month = 11;
+	}else{
+		budget_month -= 1;
+	}
+	$('#budget-month').text(monthNames[budget_month]);
+	get_expense_data();
+});
+$('#budget-month-advance').on('click', function(){
+	if(budget_month == 11){
+		budget_month = 0;
+	}else{
+		budget_month += 1;
+	}
+	$('#budget-month').text(monthNames[budget_month]);
+	get_expense_data();
+});

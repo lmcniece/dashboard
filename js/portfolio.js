@@ -1,29 +1,32 @@
-//Global Vars
-init_flag=true;
-accounts={};
-portfolio_attribute_formats = {
-	"symbol":"",
-	"shares":" numerical ",
-	"invested":" numerical ",
-	"value":" numerical ",
-	"roi":" change numerical ",
-	"roi_perc":" change numerical ",
-	"basis":" numerical ",
-	"price":" numerical ",
-	"change":" change numerical ",
-	"change_perc":" change numerical ",
-	"last_updated":" numerical ",
-}
-portfolio_hidden_attributes = {
-	"roi":" mobile-hidden ",
-	"shares":" mobile-hidden ",
-	"last_updated":" mobile-hidden ",
-	"index":" hidden "
-}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////  ON DOM READY  ///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//On DOM Ready
+$(function(){
+	get_account_data();
+	map_maker();
+	//Save width to determine when map redraw necessary
+	init_width = $(window).width();
+});
+
+var open_account = function(){
+	var holder = getCookie('holder');
+	var account = getCookie('account');
+	if(!isNull(holder)){
+		$('.nav-tabs a[href="'+holder+'"]').click();
+		if(!isNull(account)){
+			$('.nav-pills a[href="'+account+'"]').click();
+		}
+	}
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////  DATA PULL  ////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Global Vars
+init_flag=true;
+accounts={};
 
 //Get Account Data
 var get_account_data = function(){
@@ -71,6 +74,7 @@ var get_holdings_data = function(){
 							generate_tabs_pills();
 						}else{
 							update_portfolio();
+							map_maker();
 						}
 					}
 				});
@@ -85,6 +89,17 @@ var get_holdings_data = function(){
 
 //Generate Tabs and Pills
 var generate_tabs_pills = function(){
+	//Generate Summary Tab
+	$('#portfolio-nav .nav-tabs').append(
+		'<li><a data-toggle="tab" href="#summary-nav">Summary</a></li>'
+	);
+	$('#portfolio-content').prepend(
+		'<div id="summary-nav" class="tab-pane fade in">'+
+			'<ul class="nav nav-pills">'+				
+			'</ul>'+
+			'<div id="summary-content" class="tab-content"></div>'+
+		'</div>'
+	);
 	//Make tabs/pills for each unique account holder and type
 	for(var i = 0; i < accounts.length; i++){
 		holder = accounts[i].holder;
@@ -117,40 +132,50 @@ var generate_tabs_pills = function(){
 };
 
 var update_portfolio = function (){
-	//Iterate Account Holders
-	for(var i = 0; i < accounts.length; i++){
-		holder = accounts[i].holder;
-		//Iterate Account Types
-		for(var ii = 0; ii < accounts[i].types.length; ii++){
-			type = accounts[i].types[ii];
-			//Clear #holder-type content-table
-			$('#'+holder+'-'+type+' .content-table').html('<tr class="row header-row"></tr>');
-			//Generate Header Row
-			for(var attribute in accounts[i][type][0]){
-				var format_classes = portfolio_hidden_attributes[attribute];
-				$('#'+holder+'-'+type+' .content-table .header-row').append(
-					'<td class="'+format_classes+'">'+attribute.replace(/_/,' ','g').replace('perc','%')+'</td>'
-				);
-			}
-			//Iterate Holdings
-			for(var iii = 0; iii < accounts[i][type].length; iii++){
-				//Generate Content Rows
-				$('#'+holder+'-'+type+' .content-table').append('<tr class="row">');
-				for(var attribute in accounts[i][type][iii]){
-					var format_classes = portfolio_attribute_formats[attribute]+portfolio_hidden_attributes[attribute];
-					var value = accounts[i][type][iii][attribute];
-					if(isNull(value)){value = '';}
-					$('#'+holder+'-'+type+' .content-table .row').last().append('<td class="'+format_classes+'">'+value+'</td>')
-				}
-				$('#'+holder+'-'+type+' .content-table').append('</tr>');
+	//Generate Lifetime Performance Report
+	$.ajax({
+		url: "services/php_query_handler.php",
+		method: "GET",
+		data: {"query": "sql/summary_performance.sql"}
+	})
+	.done(function(data){
+		var attribute_formats = {
+			"holder":" uppercase ",
+			"type":" uppercase centered ",
+			"cost_basis":" numerical ",
+			"current_value":" numerical ",
+			"roi":" change numerical "
+		};
+		var data = $.parseJSON(data);
+		generate_standard_table('summary-content', 'summary', data, attribute_formats, false);
+
+		//Generate Account Reports
+		attribute_formats = {
+			"symbol":" uppercase ",
+			"shares":" numerical mobile-hidden",
+			"invested":" numerical ",
+			"value":" numerical ",
+			"dividends":" numerical ",
+			"roi":" change numerical mobile-hidden",
+			"roi_perc":" change numerical ",
+			"basis":" numerical ",
+			"price":" numerical ",
+			"change":" change numerical ",
+			"change_perc":" change numerical mobile-hidden",
+			"last_updated":" numerical mobile-hidden",
+		};
+		for(var i = 0; i < accounts.length; i++){
+			var holder = accounts[i].holder;
+			for(var ii = 0; ii < accounts[i].types.length; ii++){
+				type = accounts[i].types[ii];
+				generate_standard_table(holder+'-'+type, type, accounts[i][accounts[i].types[ii]], attribute_formats, true);
 			}
 		}
-	}
-	color_delta('.change, .percentage');
+	});
 };
 
 var update_stock_chart = function(symbol){
-	$('#stock-chart').attr({'src':'static/images/progress.gif', 'alt':'loading...'})
+	$('#stock-chart').attr({'src':'static/images/progress.gif', 'alt':'loading...'});
 	var symbol = symbol.toUpperCase();
 	var period = $('#chart-period').val();
 	var period_type = $('#chart-period-type').val();
@@ -170,13 +195,9 @@ var update_stock_chart = function(symbol){
 }
 
 
-//On DOM Ready
-$(function(){
-	get_account_data();
-	map_maker();
-	//Save width to determine when map redraw necessary
-	init_width = $(window).width();
-});
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////  EVENT HANDLERS  //////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //On Window Resize
 $(window).resize(function(){
@@ -187,27 +208,35 @@ $(window).resize(function(){
 	}
 });
 
-//On Portfolio Tab Access
-$('.nav').bind('click', function(e){
-	var target = $(e.target).attr("href")
+//Redraw map maker when accessing portfolio tab
+$('.nav').on('click', function(e){
+	var target = $(e.target).attr("href");
 	if(target=='#portfolio'){
-		console.log(target);
-		setTimeout(function(){map_maker()},1000);
+		setTimeout(function(){map_maker();open_account();},1000);
 	}
 });
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////  EVENT HANDLERS  //////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Set cookie to retrieve last viewed account on portfolio page
+$(document).on('click', '.nav-tabs', function(e){
+	var holder = $(e.target).attr("href");
+	setCookie('holder', holder, 365);
+	setCookie('account', '', 365);
+});
+$(document).on('click', '.nav-pills', function(e){
+	var account = $(e.target).attr("href");
+	setCookie('account', account, 365);
+});
 
-$('#update-portfolio').on('click', get_account_data);
+//Update portfolio button
+$('body').on('click', '#update-portfolio', get_account_data);
+
+//Update Google chart button
 $('#chart-container').on('click', '#update-chart', function(){
 	var symbol = $('#stock-chart-modal .modal-title').text();
 	update_stock_chart(symbol);
 });
 
-
-$('#portfolio-content').on('click', '.content-table .row:not(.header-row)', function(){
+$('#portfolio-content').on('click', 'div:not(#summary-content).tab-content .row:not(.header-row):not(.title-row)', function(){
 	var symbol = $(this).children("td").eq(0).html();
 	update_stock_chart(symbol);
 	$('#stock-chart-modal').modal('show');
@@ -223,33 +252,3 @@ $(document).keyup(function(e){
 		update_stock_chart(symbol);
 	}
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

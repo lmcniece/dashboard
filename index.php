@@ -4,8 +4,7 @@
 	<title><?php echo $project_name ?></title>
 	<head>
 		<link rel="stylesheet" type="text/css" href="static/css/global.css">
-		<link rel="icon" type="image/png" href="static/images/favicon16.png" sizes="16x16">
-		<link rel="icon" type="image/png" href="static/images/favicon32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="static/images/favicon48.png">
 		<!--Standard Script Includes-->
 		<script src="static/libs/jquery-2.1.4.min.js"></script>
 		<script src="static/libs/jquery-ui.js"></script>
@@ -50,12 +49,16 @@
     /////////////////////////////////////////////////  MAIN CONTENT  /////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 	<body>	
-		<div class="container">
+		<div class="container-fluid">
+			<div id="loading_container">
+				<img id="loading_spinner" src="static/images/progress.gif">
+				<button id="loading-cancel">Cancel</button>
+			</div>
 			<div id="site-content" class="tab-content">
 				<div id="portfolio" class="tab-pane fade active in">
 					<h1 class="page-header DT_page-header block_center">
 						<span class="emphasize">
-							Portfolio <img id="update-portfolio"  class="icon" src="./static/images/refresh.png">
+							Portfolio <img id="update-portfolio" class="icon" src="./static/images/refresh.png">
 						</span>
 					</h1>
 					<div id="map-container"></div>
@@ -80,7 +83,6 @@
 				</div>
 				<div id="cashflow" class="tab-pane fade"></div>
 				<div id="loans" class="tab-pane fade"></div>
-				<div id="loading_container"><img id="loading_spinner" src="static/images/progress.gif"></div>
 			</div>
 		</div>
 		

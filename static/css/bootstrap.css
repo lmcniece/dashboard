@@ -1,4 +1,4 @@
-/*jQuery AutoComplete*/
+\/*jQuery AutoComplete*/
 .ui-autocomplete{
 	position: absolute;
 	top: 100%;
@@ -34,15 +34,19 @@
 	padding: 3px 15px;
 	clear: both;
 	font-weight: normal;
+	font-size:120%; /*ALTERED*/
+	text-transform: uppercase; /*ALTERED*/
 	line-height: 18px;
-	color:#9286a2;
+	color:#FFB500; /*ALTERED*/
+	background-color:#333; /*ALTERED*/
+	padding:10px 0px 10px 10px; /*ALTERED*/
 	white-space: nowrap;
 }
 .ui-autocomplete > .ui-menu-item:hover,
 .ui-autocomplete > .ui-state-focus{
-	color: #ffffff;
+	color: #FFB500;
 	text-decoration: none;
-	background-color: #0088cc;
+	background-color: #000;  /*ALTERED*/
 	border-radius: 0px;
 	-webkit-border-radius: 0px;
 	-moz-border-radius: 0px;
@@ -62,7 +66,7 @@
   height: 30px;
   padding: 8px 12px;
   line-height: 30px;
-  border: 2px solid #271A36;
+  border: 2px solid #333; /*ALTERED*/
   -webkit-border-radius: 8px;
      -moz-border-radius: 8px;
           border-radius: 8px;
@@ -142,9 +146,9 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.42857143;
-  color: #6C5F7C; /*UPDATE*/
-  background-color: #30273A; /*UPDATE*/
-  padding-top: 70px; /*UPDATE*/
+  color: #FFB500; /*ALTERED*/
+  background-color: #333333; /*ALTERED*/
+  padding-top: 70px; /*ALTERED*/
 }
 article,
 aside,
@@ -1224,7 +1228,7 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #6F6284;
+  color: #FFB500;/*ALTERED*/
   text-decoration: none;
 }
 a:hover,
@@ -2434,10 +2438,10 @@ th {
 .table-condensed > thead > tr > td,
 .table-condensed > tbody > tr > td,
 .table-condensed > tfoot > tr > td {
-  padding: 8px 5px 8px 5px; /*UPDATED*/
+  padding: 8px 5px 8px 5px; /*ALTERED*/
 }
 .table-bordered {
-  border: 1px solid #887F95; /*UPDATED*/
+  border: 1px solid #777; /*ALTERED*/
 }
 .table-bordered > thead > tr > th,
 .table-bordered > tbody > tr > th,
@@ -2445,7 +2449,7 @@ th {
 .table-bordered > thead > tr > td,
 .table-bordered > tbody > tr > td,
 .table-bordered > tfoot > tr > td {
-  border: 1px solid #887F95; /*UPDATED*/
+  border: 1px solid #777; /*ALTERED*/
 }
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
@@ -2457,8 +2461,8 @@ th {
 .table-striped > tbody > tr:nth-of-type(even) {
   background-color: #000;
 }
-.table-hover > tbody > tr:not(.header-row):hover {
-  background-color: #f5f5f5;
+.table-hover > tbody > tr:not(.header-row):not(.title-row):hover {
+  background-color: #333;
 }
 table col[class*="col-"] {
   position: static;
@@ -2687,7 +2691,7 @@ output {
 .form-control {
   display: block;
   width: 100%;
-  /*height: 34px; UPDATED */
+  /*height: 34px; ALTERED */
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.42857143;
@@ -3390,27 +3394,27 @@ fieldset[disabled] .btn-success.active {
   background-color: #fff;
 }
 .btn-info {
-  color: #fff;
-  background-color: #5bc0de;
-  border-color: #46b8da;
+  color: #FFB500;
+  background-color: #000;
+  border-color: #FFB500; /*ALTERED*/
 }
 .btn-info:focus,
 .btn-info.focus {
-  color: #fff;
-  background-color: #31b0d5;
-  border-color: #1b6d85;
+  color: #FFB500;
+  background-color: #000;
+  border-color: #FFB500; /*ALTERED*/
 }
 .btn-info:hover {
-  color: #fff;
-  background-color: #31b0d5;
-  border-color: #269abc;
+  color: #000;
+  background-color: #FFB500;
+  border-color: #FFB500; /*ALTERED*/
 }
 .btn-info:active,
 .btn-info.active,
 .open > .dropdown-toggle.btn-info {
-  color: #fff;
-  background-color: #31b0d5;
-  border-color: #269abc;
+  color: #FFB500;
+  background-color: #000;
+  border-color: #FFB500; /*ALTERED*/
 }
 .btn-info:active:hover,
 .btn-info.active:hover,
@@ -3421,9 +3425,9 @@ fieldset[disabled] .btn-success.active {
 .btn-info:active.focus,
 .btn-info.active.focus,
 .open > .dropdown-toggle.btn-info.focus {
-  color: #fff;
-  background-color: #269abc;
-  border-color: #1b6d85;
+  color: #FFF;
+  background-color: #FFB500;
+  border-color: #FFB500; /*ALTERED*/
 }
 .btn-info:active,
 .btn-info.active,
@@ -4205,7 +4209,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li {
   float: left;
   margin-bottom: -1px;
-  text-transform: uppercase; /*UPDATED*/
+  text-transform: uppercase; /*ALTERED*/
 }
 .nav-tabs > li > a {
   margin-right: 2px;
@@ -4271,7 +4275,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .nav-pills > li {
   float: left;
-  text-transform: capitalize; /*UPDATED*/
+  text-transform: capitalize; /*ALTERED*/
 }
 .nav-pills > li > a {
   border-radius: 4px;
@@ -4283,8 +4287,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
   color: #fff;
-  background-color: #6F6284;
-  
+  background-color: #aa7000; /*ALTERED*/
 }
 .nav-stacked > li {
   float: none;
@@ -4780,7 +4783,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
   border-color: #080808;
 }
 .navbar-inverse .navbar-brand {
-  color: #5bc0de; /*UPDATE*/
+  color: #FFB500; /*ALTERED*/
 }
 .navbar-inverse .navbar-brand:hover,
 .navbar-inverse .navbar-brand:focus {
@@ -4788,10 +4791,10 @@ fieldset[disabled] .navbar-default .btn-link:focus {
   background-color: transparent;
 }
 .navbar-inverse .navbar-text {
-  color: #887F95; /*UPDATE*/
+  color: #FFB500; /*ALTERED*/
 }
 .navbar-inverse .navbar-nav > li > a {
-  color: #887F95; /*UPDATE*/
+  color: #FFB500; /*ALTERED*/
 }
 .navbar-inverse .navbar-nav > li > a:hover,
 .navbar-inverse .navbar-nav > li > a:focus {
@@ -5004,7 +5007,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pager li > span {
   display: inline-block;
   padding: 5px 14px;
-  /* UPDATED */
+  /* ALTERED */
 }
 .pager li > a:hover,
 .pager li > a:focus {
@@ -6069,6 +6072,7 @@ button.close {
       -ms-transform: translate(0, -25%);
        -o-transform: translate(0, -25%);
           transform: translate(0, -25%);
+	color:#000;
 }
 .modal.in .modal-dialog {
   -webkit-transform: translate(0, 0);

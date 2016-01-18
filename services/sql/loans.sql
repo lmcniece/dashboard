@@ -19,5 +19,4 @@ FROM loans
 CROSS JOIN (select ttl_out from total) subqy
 WHERE outstanding > 0
 )
-
 ORDER BY outstanding

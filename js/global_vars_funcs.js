@@ -1,3 +1,23 @@
+//Cookie Set
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+//Cookie Get
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
 //Current Date
 monthNames = [
 	"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
@@ -14,15 +34,19 @@ function isNull(e){
 
 //Ajax Loading Screen
 $(function(){
-	$(document).ajaxStart(function() {
-		$( "#loading_container" ).show();
+    $(document).ajaxStart(function(){
+		$("#loading_container").show();
 		$("body").css("overflow", "hidden");
-	});
-	
-    $(document).ajaxStop(function() {
+    });
+    $(document).ajaxStop(function(){
 		$( "#loading_container" ).hide();
 		$("body").css("overflow", "auto");
-    }); 
+    });
+	$('#loading-cancel').on('click', function(){
+		$( "#loading_container" ).hide();
+		$("body").css("overflow", "auto");
+	});
+	setTimeout(function(){open_account();},500);
 });
 
 //Rounding Function
@@ -49,44 +73,40 @@ function color_delta(selector){
 }
 
 //Standard Table Generator
-function generate_standard_table(tab, name, data, attribute_formats, hidden_attributes, has_total){
-	var data = $.parseJSON(data);
+function generate_standard_table(tab, table_name, data, attribute_formats, has_total){
+	$('#'+tab+' #'+table_name+' .content-table').remove();
 	if(!isNull(data)){
 		var columns = Object.keys(data[0]).length;
 		//Clear and Generate Content-Table
-		$('#'+tab+' #'+name+' .content-table').remove();
 		$('#'+tab+'').append(
-			'<div id="'+name+'">'+
+			'<div id="'+table_name+'">'+
 				'<table class="table table-bordered table-hover table-striped table-condensed content-table">'+
-					'<tr class="row title-row"><td colspan="'+columns+'">'+name.replace(/_/,' ','g')+'</td></tr>'+
+					'<tr class="row title-row"><th colspan="'+columns+'">'+table_name.replace(/_/,' ','g')+'</th></tr>'+
 					'<tr class="row header-row"></tr>'+
 				'</table>'+
 			'</div>'
 		);
 		//Populate Header Row
 		for(var attribute in data[0]){
-			var format_classes = hidden_attributes[attribute];
-			$('#'+tab+' #'+name+' .content-table .header-row').append(
-				'<td class="'+format_classes+'">'+attribute.replace(/_/,' ','g')+'</td>'
+			var format_classes = attribute_formats[attribute] || '';
+			$('#'+tab+' #'+table_name+' .content-table .header-row').append(
+				'<th class="'+format_classes+'">'+attribute.replace(/_perc/,' %','g').replace(/_/,' ','g')+'</th>'
 			);
 		}
 		//Generate Content Rows
 		for(var i = 0; i < data.length; i++){
-			$('#'+tab+' #'+name+' .content-table').append('<tr class="row">');
-			for(var attribute in data[i]){
-				var format_classes = attribute_formats[attribute]+hidden_attributes[attribute];
-				var value = data[i][attribute].toUpperCase();
-				if(isNull(value)){value = '';}
-				$('#'+tab+' #'+name+' .content-table .row').last().append('<td class="'+format_classes+'">'+value+'</td>')
+			if(has_total == true && i+1 == data.length){
+				$('#'+tab+' #'+table_name+' .content-table').append('<tr class="row total-row">');
+			}else{
+				$('#'+tab+' #'+table_name+' .content-table').append('<tr class="row">');
 			}
-			$('#'+tab+' #'+name+' .content-table').append('</tr>');
+			for(var attribute in data[i]){
+				var format_classes = attribute_formats[attribute];
+				var value = data[i][attribute] ? data[i][attribute] : '';
+				$('#'+tab+' #'+table_name+' .content-table .row').last().append('<td class="'+format_classes+'">'+value+'</td>')
+			}
+			$('#'+tab+' #'+table_name+' .content-table').append('</tr>');
 		}
 		color_delta('.change');
-		if(has_total == true){
-			$('#'+tab+' #'+name+' .content-table .row').last().css({
-				'font-style':'italic',
-				'color':'white'
-			});
-		}
 	}
 }

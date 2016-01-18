@@ -1,3 +1,49 @@
+/*Loading Screen*/
+#loading_container{
+    width: 5000px;
+    height: 5000px;
+    background-color: rgba(0,0,0,.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100000;
+}
+#loading_spinner{
+	width: 10%;
+	position: fixed;
+	left: 7%;
+	top: 5%;
+}
+#loading-cancel{
+	width:10%;
+	position:fixed;
+	left:7%;
+	top:5%;
+	margin-top:10%;
+	padding:10px 0 10px 0;
+	background-color:#333;
+}
+@media (min-width: 768px){
+	#loading_spinner{
+		width: 30%;
+		position: fixed;
+		left: 35%;
+		top:25%;
+	}
+	#loading-cancel{
+		width: 30%;
+		left: 35%;
+		top:25%;
+		margin-top:25%;
+	}
+}
+/*Uncategorized*/
+#cash-edit{
+	padding: 0 0 0 0;
+	cursor: pointer;
+	margin-left:10px;
+}
+
 .x3n_header{
     background: #000;
     height: 32px;
@@ -32,50 +78,69 @@ img.logo{
     width: 200px;
 }
 
-/*Content Table*/
+
+/*------------ Content Table -------------*/
 .content-table{
-	color:#5bc0de;
 	margin-top:20px;
+	color:#ccc;
 }
 .content-table tr{
-	font-size:100%;
+	font-size:90%;
 }
 .content-table td{
 	max-width:50px;
-	font-size:8px;
+	font-size:80%;
 }
 @media (min-width: 768px) {
-	.content-table td{
+	body .content-table td, body .content-table th{
 		max-width:5000px;	
 		font-size:100%;
 	}
+	body .content-table .mobile-hidden{
+		display:table-cell;
+	}
 }
-.content-table .header-row td{
+.content-table th{
 	text-transform: uppercase;
-	color: #968aa8;
-	font-weight: bold;
+	color: #FFB500;
+	font-size: 70%;
 	text-align: center;
 }
-.content-table tr:not(.header-row){
+.content-table tr:not(.header-row):not(.title-row){
 	cursor:pointer;
 }
-.content-table tr:not(.header-row):hover{
-	color:#000;
-}
+
 #portfolio-nav{
 	margin-bottom:20px;
 	margin-top:20px;
 }
-.numerical{
+/*Format Classes for table*/
+.content-table td.numerical{
 	text-align:right;
 }
-.title-row{
+td.uppercase{
+	text-transform:uppercase;
+}
+.content-table td.centered{
+	text-align:center;
+}
+.content-table .mobile-hidden{
+	display:none;
+}
+.content-table td.title-row{
 	text-align: center;
     text-transform: uppercase;
-	color: #5f9ea0;
+	color: #FFB500;
 	font-weight: bold;
 }
-/*End Content Table*/
+.content-table tr.total-row td{
+	background-color: #222;
+	font-style: italic;
+}
+.content-table tr.total-row{
+	color: #fff;
+}
+/*------------ End Content Table -------------*/
 
 
 
@@ -121,22 +186,6 @@ img.logo{
 }
 .hidden{
 	display:none;
-}
-#loading_container{
-    width: 5000px;
-    height: 5000px;
-    background-color: rgba(0,0,0,.4);
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: none;
-    z-index: 100000;
-}
-#loading_spinner{
-    width: 30%;
-    position: fixed;
-    top: 50%;
-    left: 35%;
 }
 #transaction-entry-modal .form-control{
 	margin-top:25px;

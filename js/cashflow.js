@@ -1,9 +1,11 @@
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////  DATA PULL  ////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////  DATA PULL AND CONTENT GENERATION /////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Beginning of chained updates from top to bottom
 //Get Net Worth
 var get_net_worth = function(){
+	$('#cashflow').empty();
 	$.ajax({
 		url: "services/php_query_handler.php",
 		method: "GET",
@@ -28,44 +30,15 @@ var get_bill_data = function(){
 		}
 	})
 	.done(function(data){
+		//Set data to global var bills for use by pay period calculation function
 		bills = $.parseJSON(data);
-		//Generate Content-Tables
-		$('#cashflow').append(
-			'<div id="bills">'+
-				'<table class="table table-bordered table-hover table-striped table-condensed content-table">'+
-					'<tr class="row header-row"></tr>'+
-				'</table>'+
-			'</div>'+
-			'<div id="pay_periods">'+
-				'<table class="table table-bordered table-hover table-striped table-condensed content-table">'+
-					'<tr class="row header-row">'+
-						'<td>Pay Date</td>'+
-						'<td>Income</td>'+
-						'<td>Expenses</td>'+
-						'<td>Delta</td>'+
-						'<td>Cashflow</td>'+
-					'</tr>'+
-				'</table>'+
-			'</div>'
-		);
-		
-		//Generate Header Row
-		for(var attribute in bills[0]){
-			$('#cashflow #bills .content-table .header-row').append(
-				'<td class="">'+attribute.replace(/_/,' ','g')+'</td>'
-			);
-		}
-		//Generate Content Rows
-		for(var i = 0; i < bills.length; i++){
-			$('#cashflow #bills .content-table').append('<tr class="row">');
-			for(var attribute in bills[i]){
-				//var format_classes = attribute_formats[attribute]+hidden_attributes[attribute];
-				var value = bills[i][attribute];
-				if(isNull(value)){value = '';}
-				$('#cashflow #bills .content-table .row').last().append('<td class="">'+value+'</td>')
-			}
-			$('#cashflow #bills .content-table').append('</tr>');
-		}
+		//Generate Content-Table
+		var attribute_formats = {
+			"account":" uppercase ",
+			"amount":" numerical ",
+			"due_day":" numerical "
+		};
+		generate_standard_table('cashflow', 'bills', bills, attribute_formats, false);
 		get_cashflow_data();
 	});
 }
@@ -75,13 +48,15 @@ var get_cashflow_data = function(){
 	$.ajax({
 		url: "services/php_query_handler.php",
 		method: "GET",
-		data: {
-			"query": "sql/cashflow.sql"
-		}
+		data: {"query": "sql/cashflow.sql"}
 	})
 	.done(function(data){
 		cashflow = $.parseJSON(data)[0];
-		$('#cashflow').prepend("<div>Cash on hand: "+cashflow.bank+'</div>');
+		$('#cashflow').prepend(
+			'<div>Cash on hand: '+cashflow.bank+
+				'<span id=cash-edit data-toggle="modal" data-target="#bank-edit-modal">&#x2699</span>'+
+			'</div>'
+		);
 		
 		//Generate Pay Period Object
 		var initial_pay_date = new Date('2015','00','09');
@@ -120,7 +95,7 @@ var get_cashflow_data = function(){
 		for(var i = 0; i < pay_periods.length; i++){
 			for(var ii = 0; ii < bills.length; ii++){
 				//Convert Due Days to Full Dates
-				if(bills[ii].due_day < today.getDate()){
+				if(bills[ii].due_day <= today.getDate()){
 					bills[ii].due_date = new Date(today.getFullYear(), today.getMonth()+1, bills[ii].due_day);
 				}else{
 					bills[ii].due_date = new Date(today.getFullYear(), today.getMonth(), bills[ii].due_day);
@@ -136,22 +111,14 @@ var get_cashflow_data = function(){
 		}
 		
 		//Generate Content Rows
-		var cashflow_attribute_formats = {
-			"pay_period":"",
+		var attribute_formats = {
+			"pay_period":" ",
 			"income":" numerical ",
 			"expenses":" numerical ",
 			"delta":" change numerical ",
 			"cashflow":" change numerical "
 		}
-		for(var i = 0; i < pay_periods.length; i++){
-			$('#cashflow #pay_periods .content-table').append('<tr class="row">');
-			for (attribute in pay_periods[i]){
-				var format_classes = cashflow_attribute_formats[attribute];
-				$('#cashflow #pay_periods .content-table .row').last().append('<td class="'+format_classes+'">'+pay_periods[i][attribute]+'</td>');
-			}
-			$('#cashflow #pay_periods .content-table').append('</tr>');
-		}
-		color_delta('.change');
+		generate_standard_table('cashflow', 'pay-periods', pay_periods, attribute_formats, false);
 		get_annual_reports();
 	});	
 }
@@ -169,15 +136,14 @@ var get_annual_reports = function(){
 	})
 	.done(function(data){
 		var attribute_formats = {
-			"fy14":" numerical ",
-			"fy15":" numerical ",
+			"account":" uppercase ",
+			"prior":" numerical ",
+			"current":" numerical ",
 			"delta":" change numerical ",
-			"fy14_pr":" numerical "
+			"pro_rated":" numerical "
 		};
-		var hidden_attributes = {
-			"index":" hidden "
-		};
-		generate_standard_table('cashflow', 'annual_revenue', data, attribute_formats, hidden_attributes, true);
+		var data = $.parseJSON(data);
+		generate_standard_table('cashflow', 'annual_revenue', data, attribute_formats, true);
 		//Generate Annual Expenses Report
 		$.ajax({
 			url: "services/php_query_handler.php",
@@ -188,44 +154,48 @@ var get_annual_reports = function(){
 		})
 		.done(function(data){
 			var attribute_formats = {
-				"fy14":" numerical ",
-				"fy15":" numerical ",
+				"account":" uppercase ",
+				"prior":" numerical ",
+				"current":" numerical ",
 				"delta":" change numerical ",
-				"fy14_pr":" numerical "
+				"pro_rated":" numerical "
 			};
-			var hidden_attributes = {
-				"index":" hidden "
-			};
-			generate_standard_table('cashflow', 'annual_expenses', data, attribute_formats, hidden_attributes, true);
+			var data = $.parseJSON(data);
+			generate_standard_table('cashflow', 'annual_expenses', data, attribute_formats, true);
 		});
 	});
 }
 
 $(function(){get_net_worth();});
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////  DATABASE UPDATE  ////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+var update_cash_on_hand = function(account, amount, type, date){
+	//Update cashflow table with new bank holdings amount
+	var amount = $('#bank-amount').val();
+	$.ajax({
+		url: "services/php_query_handler.php",
+		method: "GET",
+		data: {
+			"query": "sql/bank_edit.sql",
+			"amount" : amount
+		}
+	})
+	.done(function(result){
+		$('#bank-edit-modal').modal('hide');
+		if(result = ' []'){
+			result = 'Update Successful!';
+		}
+		notification_modal(result);
+		get_net_worth();
+	});
+}
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////  EVENT HANDLERS  /////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Click on submit buttons triggers form submit
+$('#bank-edit-modal').on('click','#submit-bank-edit', update_cash_on_hand);

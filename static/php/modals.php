@@ -43,7 +43,6 @@
 				<div class="modal-body">
 					<div id="transaction-account-autocomplete" class="form-group">
 						<input id="transaction-account" class="form-control fresh-input" type="text" placeholder="Transaction Account">
-						<input id="transaction-tag" class="form-control fresh-input" type="text" placeholder="Account Tag">
 					</div>
 					<div class="form-group">
 						<input type="number" id="transaction-amount" class="form-control fresh-input" placeholder="0.00">
@@ -52,6 +51,9 @@
 							<option value="debit">Debit</option>
 							<option value="credit">Credit</option>
 						</select>
+					<div id="transaction-tag-autocomplete" class="form-group">
+						<input id="transaction-tag" class="form-control fresh-input" type="text" placeholder="Account Tag">
+					</div>
 						<button id="submit-new-transaction" class="form-control" data-dismiss="modal">Submit</button>
 					</div>
 				</div>
@@ -60,13 +62,7 @@
 	</div>
 </div>
 <!--Default Values-->
-<script>
-$(function(){
-	$('#transaction-date').val(date_iso(today));
-});
-</script>
-
-
+<script>$(function(){$('#transaction-date').val(date_iso(today));});</script>
 
 <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////  NOTIFICAITONS  /////////////////////////////////////////////////
@@ -86,10 +82,31 @@ $(function(){
 	</div>
 </div>
 <script>
-
 //Notification box
 function notification_modal(notification){
 	$('#notification-modal .modal-body').html('<div><h4>'+notification+'</h4></div>');
 	$('#notification-modal').modal('show');
 };
 </script>
+
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////  BANK CASH EDIT  ////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<div id="bank-edit-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<input type="number" id="bank-amount" class="form-control fresh-input" placeholder="0.00">
+						<button id="submit-bank-edit" class="form-control" data-dismiss="modal">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
