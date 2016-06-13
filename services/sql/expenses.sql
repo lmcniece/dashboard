@@ -4,20 +4,20 @@ SELECT unnest(string_to_array('drinking,dining,entertainment,furnish,grocery,ele
 
 cashflows AS(
 SELECT
-	tag,
+	category,
 	coalesce(ce.amount,0) as expected,
 	coalesce(ca.amount,0) as actual,
-	coalesce(ca.amount,0) - coalesce(ce.amount,0) as delta
+	coalesce(ce.amount,0) - coalesce(ca.amount,0) as delta
 FROM cashflow_expected ce
 FULL JOIN (
 	select * 
 	from expenses_actual
 	where year = '${year}$'
 		and month = '${month}$'
-		and tag in (select * from variable_categories)
+		and category in (select * from variable_categories)
 	) ca
-USING (tag)
-WHERE tag in (select * from variable_categories)
+USING (category)
+WHERE category in (select * from variable_categories)
 ORDER BY delta desc
 ),
 
@@ -28,7 +28,7 @@ UNION
 	'total'::text as tag,
 	sum(coalesce(ce.amount,0)) as expected,
 	sum(coalesce(ca.amount,0)) as actual,
-	sum(coalesce(ca.amount,0) - coalesce(ce.amount,0)) as delta,
+	sum(coalesce(ce.amount,0) - coalesce(ca.amount,0)) as delta,
 	'1000' as index
 FROM cashflow_expected ce
 FULL JOIN (
@@ -36,9 +36,9 @@ FULL JOIN (
 	from expenses_actual
 	where year = '${year}$'
 		and month = '${month}$'
-	) ca USING (tag)
-WHERE tag in (select * from variable_categories)
+	) ca USING (category)
+WHERE category in (select * from variable_categories)
 )
 )
 
-SELECT tag, expected, actual, delta FROM agg_cashflow ORDER BY INDEX ASC
+SELECT category, expected, actual, delta FROM agg_cashflow ORDER BY INDEX ASC

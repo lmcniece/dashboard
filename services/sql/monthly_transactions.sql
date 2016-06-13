@@ -5,6 +5,7 @@ SELECT
 			THEN amount * -1
 		ELSE amount
 	END as amount,
+	category,
 	type,
 	date
 FROM transactions

@@ -44,6 +44,9 @@
 					<div id="transaction-account-autocomplete" class="form-group">
 						<input id="transaction-account" class="form-control fresh-input" type="text" placeholder="Transaction Account">
 					</div>
+					<div id="transaction-category-autocomplete" class="form-group">
+						<input id="transaction-category" class="form-control fresh-input" type="text" placeholder="Account Tag">
+					</div>
 					<div class="form-group">
 						<input type="number" id="transaction-amount" class="form-control fresh-input" placeholder="0.00">
 						<input type="date" id="transaction-date" class="form-control">
@@ -51,9 +54,6 @@
 							<option value="debit">Debit</option>
 							<option value="credit">Credit</option>
 						</select>
-					<div id="transaction-tag-autocomplete" class="form-group">
-						<input id="transaction-tag" class="form-control fresh-input" type="text" placeholder="Account Tag">
-					</div>
 						<button id="submit-new-transaction" class="form-control" data-dismiss="modal">Submit</button>
 					</div>
 				</div>

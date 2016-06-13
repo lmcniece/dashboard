@@ -155,7 +155,7 @@ var update_portfolio = function (){
 			"shares":" numerical mobile-hidden",
 			"invested":" numerical ",
 			"value":" numerical ",
-			"dividends":" numerical ",
+			"div":" numerical mobile-hidden",
 			"roi":" change numerical mobile-hidden",
 			"roi_perc":" change numerical ",
 			"basis":" numerical ",

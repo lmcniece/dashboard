@@ -1,13 +1,13 @@
 WITH cashflows AS(
 SELECT
-	coalesce(prior.tag,current.tag) as account,
+	coalesce(prior.category,current.category) as account,
 	coalesce(prior.amount,0) as prior,
 	coalesce(current.amount,0) as current,
 	round(coalesce(prior.amount,0)*(EXTRACT(DOY FROM current_timestamp)::numeric/365),2) as pro_rated,
 	round(coalesce(current.amount,0) - coalesce(prior.amount,0)*(EXTRACT(DOY FROM current_timestamp)::numeric/365),2) as delta
 FROM
 	revenue_current_year CURRENT
-FULL JOIN revenue_prior_year prior USING (tag)
+FULL JOIN revenue_prior_year prior USING (category)
 ORDER BY delta DESC
 ),
 
@@ -23,7 +23,7 @@ UNION
 	'1000' as index
 FROM
 	revenue_current_year CURRENT
-FULL JOIN revenue_prior_year prior USING (tag)
+FULL JOIN revenue_prior_year prior USING (category)
 )
 )
 

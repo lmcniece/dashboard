@@ -2,9 +2,6 @@
 ////////////////////////////////////////////////  ON DOM READY  //////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Hide tag entry by default
-$('#transaction-tag').css('display','none');
-
 //Generate transaction account autocomplete array
 $(function(){
 	$.ajax({
@@ -21,15 +18,7 @@ $(function(){
 		};
 		$('#transaction-account').autocomplete({
 			source: transaction_account_list,
-			appendTo: "#transaction-account-autocomplete",
-			change: function() {
-				var selected_account = $('#transaction-account').val();
-				if(!isNull(selected_account) && transaction_account_list.indexOf(selected_account)==-1){
-					$('#transaction-tag').css('display','initial');
-				}else{
-					$('#transaction-tag').css('display','none');
-				}
-			}
+			appendTo: "#transaction-account-autocomplete"
 		});
 	});
 });
@@ -39,17 +28,17 @@ $(function(){
 	$.ajax({
 		url: "services/php_query_handler.php",
 		method: "GET",
-		data: {"query": "sql/transaction_tags.sql"}
+		data: {"query": "sql/transaction_categories.sql"}
 	})
 	.done(function(data){
-		var transaction_tag_list = [];
+		var transaction_category_list = [];
 		var data = $.parseJSON(data);
 		for(var i = 0; i < data.length; i++){
-			transaction_tag_list.push(data[i].tag);
+			transaction_category_list.push(data[i].category);
 		};
-		$('#transaction-tag').autocomplete({
-			source: transaction_tag_list,
-			appendTo: "#transaction-tag-autocomplete"
+		$('#transaction-category').autocomplete({
+			source: transaction_category_list,
+			appendTo: "#transaction-category-autocomplete"
 		});
 	});
 });
@@ -79,7 +68,7 @@ var get_expense_data = function(){
 	})
 	.done(function(data){
 		var attribute_formats = {
-			"tag":" uppercase ",
+			"category":" uppercase ",
 			"expected":" numerical ",
 			"actual":" numerical ",
 			"delta":" change numerical "
@@ -109,6 +98,7 @@ var get_monthly_transactions = function(){
 		var attribute_formats = {
 			"account":" uppercase ",
 			"amount":" numerical change ",
+			"category":" uppercase centered ",
 			"type":" uppercase centered ",
 			"date":" centered "
 		};
@@ -124,35 +114,14 @@ var get_monthly_transactions = function(){
 var insert_transaction_handler = function(){
 	//Get variables and blank out for next instance
 	var account = $('#transaction-account').val();$('#transaction-account').val('');
-	var tag = $('#transaction-tag').val();$('#transaction-tag').val('');
+	var category = $('#transaction-category').val();$('#transaction-category').val('');
 	var amount = $('#transaction-amount').val();$('#transaction-amount').val('');
-	var type = $('#transaction-type').val();//Don't blank date or type
+	var type = $('#transaction-type').val();
 	var date = $('#transaction-date').val();
-	//If new transaction account, first insert new tag pair into Tags table
-	if(transaction_account_list.indexOf(account) == -1){
-		console.log("New account");
-		$.ajax({
-			url: "services/php_query_handler.php",
-			method: "GET",
-			data: {
-				"query": "sql/new_transaction_account.sql",
-				"account" : account,
-				"tag" : tag
-			}
-		})
-		.done(function(result){
-			$('#transaction-entry-modal').modal('hide');
-			if(isNull(result)){
-				result = 'Insertion Successful!';
-			}
-			notification_modal(result);
-			insert_transaction(account, amount, type, date);
-		});
-	}else{
-		insert_transaction(account, amount, type, date);
-	}
+	//Insert new transaction record
+	insert_transaction(account, amount, type, date, category);
 }
-var insert_transaction = function(account, amount, type, date){
+var insert_transaction = function(account, amount, type, date, category){
 	//Insert new transactions into Transactions table
 	$.ajax({
 		url: "services/php_query_handler.php",
@@ -162,7 +131,8 @@ var insert_transaction = function(account, amount, type, date){
 			"account" : account,
 			"amount" : amount,
 			"type" : type,
-			"date" : date
+			"date" : date,
+			"category" : category
 		}
 	})
 	.done(function(result){

@@ -1,6 +1,7 @@
-INSERT INTO transactions (account, amount, type, date) values (
+INSERT INTO transactions (account, amount, type, date, category) values (
 	lower('${account}$'),
 	'${amount}$',
 	lower('${type}$'),
-	'${date}$'
+	'${date}$',
+	lower('${category}$')
 )

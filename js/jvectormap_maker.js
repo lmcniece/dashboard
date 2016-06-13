@@ -34,7 +34,7 @@ var map_maker = function(){
 		"height" : $("#portfolio").width()*(2/3)*(1/3)
 	});
 	$(".map").css({
-		"width" : $("#portfolio").width()*(1/3)-6,
+		"width" : $("#portfolio").width()*(1/3)-20,
 		"height" : $("#portfolio").width()*(2/3)*(1/3)
 	});
 	var country_data = {};
@@ -48,7 +48,7 @@ var map_maker = function(){
 	})
 	.done(function(data){
 		raw_data = $.parseJSON(data);
-		//Construct country_data object and switch region to world if non-NA country code detected
+		//Construct country_data object
 		for(var i = 0; i < raw_data.length; i++){
 			country_data[raw_data[i]["country"].toUpperCase()] = raw_data[i]["change_perc"];
 			full_country_data[raw_data[i]["country"].toUpperCase()] = {"change_perc":raw_data[i]["change_perc"],"label":raw_data[i]["label"]};

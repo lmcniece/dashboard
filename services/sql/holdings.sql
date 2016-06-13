@@ -24,9 +24,9 @@ unification as(
 		null as shares,
 		sum(invested) as invested,
 		sum(value) as value,
-		sum(dividends) as value,
+		sum(dividends) as dividends,
 		sum(roi) as roi,
-		round(((sum(value)-sum(invested))/sum(invested))*100,2) as roi_perc,
+		round(((sum(value+coalesce(dividends,0))-sum(invested))/sum(invested))*100,2) as roi_perc,
 		null as basis,
 		null as price,
 		sum(change) as change,
@@ -37,6 +37,6 @@ unification as(
 	)
 )
 
-SELECT symbol, shares, invested, value, dividends, roi, roi_perc, basis, price, change, change_perc, last_updated
+SELECT symbol, shares, invested, value, dividends as div, roi, roi_perc, basis, price, change, change_perc, last_updated
 FROM unification
 ORDER BY index

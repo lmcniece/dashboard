@@ -1,1 +1,1 @@
-select account from tags order by 1 asc
+select account from transactions group by 1 order by 1 asc
