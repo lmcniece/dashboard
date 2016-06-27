@@ -1,5 +1,5 @@
-WITH variable_categories AS(
-SELECT unnest(string_to_array('drinking,dining,entertainment,furnish,grocery,electronics,misc,clothing,laundry',','))
+WITH static_categories AS(
+SELECT unnest(string_to_array('payroll,401k,espp,loan,medical,rent,tax,transport,utilities',','))
 ),
 
 cashflows AS(
@@ -14,10 +14,10 @@ FULL JOIN (
 	from expenses_actual
 	where year = '${year}$'
 		and month = '${month}$'
-		and category in (select * from variable_categories)
+		and category not in (select * from static_categories)
 	) ca
 USING (category)
-WHERE category in (select * from variable_categories)
+WHERE category not in (select * from static_categories)
 ORDER BY delta desc
 ),
 
@@ -37,7 +37,7 @@ FULL JOIN (
 	where year = '${year}$'
 		and month = '${month}$'
 	) ca USING (category)
-WHERE category in (select * from variable_categories)
+WHERE category not in (select * from static_categories)
 )
 )
 
