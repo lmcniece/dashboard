@@ -80,6 +80,12 @@ var get_cashflow_data = function(){
 				"expenses" : 0,
 				"delta" : 0,
 				"cashflow" : 0
+			},{
+				pay_period : new Date(initial_pay_date.getTime()),
+				"income" : (cashflow.payroll * 3).toFixed(2),
+				"expenses" : 0,
+				"delta" : 0,
+				"cashflow" : 0
 			}
 		];
 		pay_periods[0].pay_period.setTime(
@@ -92,6 +98,7 @@ var get_cashflow_data = function(){
 			) + initial_pay_date.getTime() + two_weeks_ms);
 		pay_periods[1].pay_period.setTime(pay_periods[0].pay_period.getTime()+two_weeks_ms);
 		pay_periods[2].pay_period.setTime(pay_periods[1].pay_period.getTime()+two_weeks_ms);
+		pay_periods[3].pay_period.setTime(pay_periods[2].pay_period.getTime()+two_weeks_ms);
 		for(var i = 0; i < pay_periods.length; i++){
 			for(var ii = 0; ii < bills.length; ii++){
 				//Convert Due Days to Full Dates
