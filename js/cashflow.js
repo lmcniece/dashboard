@@ -95,19 +95,23 @@ var get_cashflow_data = function(){
 					/
 					two_weeks_ms
 				)
-			) + initial_pay_date.getTime() + two_weeks_ms);
+			)
+			+ initial_pay_date.getTime()
+			+ two_weeks_ms
+		);
 		pay_periods[1].pay_period.setTime(pay_periods[0].pay_period.getTime()+two_weeks_ms);
 		pay_periods[2].pay_period.setTime(pay_periods[1].pay_period.getTime()+two_weeks_ms);
 		pay_periods[3].pay_period.setTime(pay_periods[2].pay_period.getTime()+two_weeks_ms);
 		for(var i = 0; i < pay_periods.length; i++){
 			for(var ii = 0; ii < bills.length; ii++){
-				//Convert Due Days to Full Dates
-				if(bills[ii].due_day <= today.getDate()){
-					bills[ii].due_date = new Date(today.getFullYear(), today.getMonth()+1, bills[ii].due_day);
-				}else{
-					bills[ii].due_date = new Date(today.getFullYear(), today.getMonth(), bills[ii].due_day);
+				bills[ii].current_due_date = new Date(today.getFullYear(), today.getMonth(), bills[ii].due_day);
+				bills[ii].next_due_date = new Date(today.getFullYear(), today.getMonth()+1, bills[ii].due_day);
+				//Add bill amount if coming due
+				if((bills[ii].current_due_date > today && bills[ii].current_due_date <= pay_periods[i].pay_period)){
+					pay_periods[i].expenses += Number(bills[ii].amount);
 				}
-				if(bills[ii].due_date > today && bills[ii].due_date <= pay_periods[i].pay_period){
+				//Add bill if coming due next rotation
+				if(bills[ii].next_due_date > today && bills[ii].next_due_date <= pay_periods[i].pay_period){
 					pay_periods[i].expenses += Number(bills[ii].amount);
 				}
 			}

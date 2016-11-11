@@ -1,5 +1,5 @@
 WITH static_categories AS(
-SELECT unnest(string_to_array('payroll,401k,espp,internet,loan,medical,rent,tax,transport,utilities',','))
+SELECT unnest(string_to_array('payroll,401k,espp,internet,loan,medical,rent,tax,transport,travel,utilities',','))
 ),
 
 cashflows AS(
