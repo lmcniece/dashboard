@@ -32,23 +32,6 @@ function isNull(e){
     return (e==null || e==undefined || String(e).toUpperCase()=="NULL" || e=="" || String(e).toUpperCase()=="UNDEFINED");
 }
 
-//Ajax Loading Screen
-$(function(){
-    $(document).ajaxStart(function(){
-		$("#loading_container").show();
-		$("body").css("overflow", "hidden");
-    });
-    $(document).ajaxStop(function(){
-		$( "#loading_container" ).hide();
-		$("body").css("overflow", "auto");
-    });
-	$('#loading-cancel').on('click', function(){
-		$( "#loading_container" ).hide();
-		$("body").css("overflow", "auto");
-	});
-	setTimeout(function(){open_account();},500);
-});
-
 //Rounding Function
 function round(val, decimalPlaces) {
     var multiplier = Math.pow(10, decimalPlaces);
@@ -109,4 +92,22 @@ function generate_standard_table(tab, table_name, data, attribute_formats, has_t
 		}
 		color_delta('.change');
 	}
+}
+
+//Takes an array of header strings and a body string to generate a sortable table
+var generateSortableTable = function(headers,data,id){
+	var header_string = "";
+	var table_body_string = "";
+	global_date = data;
+	for(var i=0;i<headers.length;i++){
+		header_string += "<th>"+headers[i].label+"</th>";
+	}
+	for(var i=0;i<data.length;i++){
+		table_body_string += "<tr>";
+		for(var ii=0;ii<Object.keys(data[i]).length;ii++){
+			table_body_string += '<td class="'+headers[ii].classes+'">'+data[i][Object.keys(data[i])[ii]]+"</td>";
+		}
+		table_body_string += "</tr>";
+	}
+	return '<table id="'+id+'" class="table sortable table-bordered table-hover table-striped table-condensed content-table"><thead>'+header_string+"</thead><tbody>"+table_body_string+"</tbody></table>";
 }

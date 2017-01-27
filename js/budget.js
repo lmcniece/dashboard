@@ -67,14 +67,16 @@ var get_expense_data = function(){
 		}
 	})
 	.done(function(data){
-		var attribute_formats = {
-			"category":" uppercase ",
-			"expected":" numerical ",
-			"actual":" numerical ",
-			"delta":" change numerical "
-		}
+		var headers = [
+			{"label":"category","classes":"uppercase"},
+			{"label":"expected","classes":"numerical"},
+			{"label":"actual","classes":"numerical"},
+			{"label":"delta","classes":"change numerical"}
+		]
 		var data = $.parseJSON(data);
-		generate_standard_table('budget', 'expenses', data, attribute_formats, true);
+		var table = generateSortableTable(headers, data, "expenses-table");
+		$("#budget").append(table);
+		$.bootstrapSortable();
 		get_monthly_transactions();
 	});
 }

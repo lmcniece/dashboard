@@ -175,7 +175,7 @@ var update_portfolio = function (){
 };
 
 var update_stock_chart = function(symbol){
-	$('#stock-chart').attr({'src':'static/images/progress.gif', 'alt':'loading...'});
+	$('#stock-chart').attr({'src':'static/img/progress.gif', 'alt':'loading...'});
 	var symbol = symbol.toUpperCase();
 	var period = $('#chart-period').val();
 	var period_type = $('#chart-period-type').val();
@@ -187,7 +187,7 @@ var update_stock_chart = function(symbol){
 		var stock_url = 'https://www.google.com/finance/getchart?q='+symbol+'&p='+period+period_type+interval;
 		var alt = 'https://www.google.com/finance?q='+symbol
 	}else{
-		var stock_url = 'static/images/stock_chart.png';
+		var stock_url = 'static/img/stock_chart.png';
 		var alt = 'https://www.google.com/finance?q=MUTF%3A'+symbol;
 	}
 	$('#stock-chart').attr({'src':stock_url, 'alt':alt})
