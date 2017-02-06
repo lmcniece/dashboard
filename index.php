@@ -17,79 +17,84 @@
 			color: #0ff;
 		}
 		td{
-			width:100px;
-			height:100px;
-			background: #0f0;
+			background: #0af;
 			color:#000;
-			font-size:40px;
+			font-size:4em;
 			text-align:center;
+			border:2px solid black;
 		}
-		#advent-container{
+		.advent-image{
+			max-width:100%;
+		}
+		.opened_day{
+			z-index: 11;
+			position:relative;
+		}
+		.container{
 			margin-right:auto;
 			margin-left:auto;
 		}
+		#quote-container{
+			width:50%;
+		}
 		#jona_lisa{
-			height:600px;
-			width: 447px;;
+			height:400px;
+			width: 295px;;
+		}
+		#image_overlay-container{
+			position: absolute;
+			width:500px;
+			z-index: 11;
+		}
+		#overlay{
+			background-color: rgba(0,0,0,.4);
+			position: absolute;
+			top: 0;
+			left: 0;
+			width:100%;
+			height:100%;
+			z-index: 10;
 		}
 	</style>
 	<body>
-		<div id="jona_lisa-container">
+		<div id="jona_lisa-container" class="container">
 			<img id="jona_lisa" src="assets/img/jona_lisa.jpg">
 		</div>
-		<h3>
-			"Thou must persist through forty days and forty nights, forty suns and forty moons, forty periods of abject gloom. If thou does this, heaven's gate will open unto thee." 
-		</h3>
-		<h5 style="text-align:right">
-			~ Third Book of the Revelations of Jona Lisa 17:9
-		</h5>
-		<div id="advent-container"></div>
-		<!--<div class="image-container">
-			<img src="assets/img/fire_dude.gif" alt="Not Ready" height="300" width="450">
-			<img src="assets/img/tiger.gif" alt="Cherry" height="300" width="450">
-			<div class="image-container"><img src="assets/img/spring_2017.jpg" alt="Cherry" height="315" width="600"></div>
-		</div>-->
+		<div id="quote-container" class="container">
+			<h3 style="text-align:left">
+				"Thou must persist through forty days and forty nights, forty suns and forty moons. If thou doest this for me, heaven's gate will open unto thee and basketballs will fall from the sky." 
+			</h3>
+			<h5 style="text-align:right">
+				~ Third Book of the Revelations of Jona Lisa 17:9
+			</h5>
+		</div>
+		<div id="advent-container" class="container"></div>
+		<div id="image_overlay-container" class="container"></div>
+		<div id="overlay"></div>
 	</body>
 </html>
 <script>
 
-function getTimeRemaining(endtime) {
+function openDays(){
+	var endtime = "Fri Mar 16 2017 00:00:00 GMT-0600 (Central Standard Time)";
 	var t = Date.parse(endtime) - Date.parse(new Date());
-	var seconds = Math.floor((t / 1000) % 60);
-	var minutes = Math.floor((t / 1000 / 60) % 60);
-	var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-	var days = Math.floor(t / (1000 * 60 * 60 * 24));
-	return {
-	'total': t,
-	'days': days,
-	'hours': hours,
-	'minutes': minutes,
-	'seconds': seconds
-	};
-}
-
-function initializeClock(id, endtime) {
-	var clock = document.getElementById(id);
-	var daysSpan = clock.querySelector('.days');
-	var hoursSpan = clock.querySelector('.hours');
-	var minutesSpan = clock.querySelector('.minutes');
-	var secondsSpan = clock.querySelector('.seconds');
-
-	function updateClock() {
-		var t = getTimeRemaining(endtime);
-
-		//daysSpan.innerHTML = t.days;
-		//hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
-		//minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-		//secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-
-		if (t.total <= 0) {
-			clearInterval(timeinterval);
-		}
+	var days_remaining = Math.floor(t / (1000 * 60 * 60 * 24));
+	for(var i=days_remaining;i<41;i++){
+		$("#cell-"+i).css("background","#f00");
+		$("#cell-"+i).addClass("opened_day");
+		$("#cell-"+i).html('<img class="advent-image" src="assets/img/advent-imgs/'+i+'.gif">');
 	}
-
-	updateClock();
-	var timeinterval = setInterval(updateClock, 1000);
+	$(".opened_day" ).mouseover(function(){
+		$("#image_overlay-container").css("display","block");
+		$("#overlay").css("display","block");
+		$("#image_overlay-container").css("left",$( window ).width()/2-250);
+		$("#image_overlay-container").css("top",$(window).scrollTop()+50);
+		$("#image_overlay-container").html('<img class="advent-image" src="assets/img/advent-imgs/'+$(this).attr("image_num")+'.gif">');
+	});
+	$(".opened_day" ).mouseout(function(){
+		$("#image_overlay-container").css("display","none");
+		$("#overlay").css("display","none");
+	});
 }
 
 function generateTable(rows, columns, container){
@@ -97,7 +102,8 @@ function generateTable(rows, columns, container){
 	for(var i=0;i<rows;i++){
 		table += '<tr>';
 		for(var ii=0;ii<columns;ii++){
-			table += '<td id="cell-'+i+'-'+ii+'">'+String(40-(i*10+ii))+'</td>'
+			var image_num = String(40-(i*columns+ii));
+			table += '<td id="cell-'+image_num+'" image_num="'+image_num+'">'+image_num+'</td>'
 		}
 		table += '</tr>';
 	}
@@ -105,7 +111,16 @@ function generateTable(rows, columns, container){
 	container.html(table);
 	
 }
-var deadline = "Fri Mar 16 2017 00:00:00 GMT-0600 (Central Standard Time)";
-//initializeClock('clockdiv', deadline);
-generateTable(4,10,$("#advent-container"));
+
+function calculateCSS(columns){
+	var win_width = $( window ).width();
+	$("td").css("height",(win_width*.9)/columns).css("width",(win_width*.9)/columns);
+	$("#advent-container").css("width", (win_width*.9));
+}
+
+$("#overlay").css("display","none");
+generateTable(5,8,$("#advent-container"));
+calculateCSS(8);
+openDays();
+
 </script>
