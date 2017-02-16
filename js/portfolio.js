@@ -139,36 +139,36 @@ var update_portfolio = function (){
 		data: {"query": "sql/summary_performance.sql"}
 	})
 	.done(function(data){
-		var attribute_formats = {
-			"holder":" uppercase ",
-			"type":" uppercase centered ",
-			"cost_basis":" numerical ",
-			"current_value":" numerical ",
-			"roi":" change numerical "
-		};
+		var headers= [
+			{"label":"holder","classes":"uppercase"},
+			{"label":"type","classes":"uppercase centered"},
+			{"label":"cost basis","classes":"numerical"},
+			{"label":"current value","classes":"numerical"},
+			{"label":"roi","classes":"change numerical"}
+		];
 		var data = $.parseJSON(data);
-		generate_standard_table('summary-content', 'summary', data, attribute_formats, false);
+		generateSortableTable('#summary-content','summary',headers,data,false);
 
 		//Generate Account Reports
-		attribute_formats = {
-			"symbol":" uppercase ",
-			"shares":" numerical mobile-hidden",
-			"invested":" numerical ",
-			"value":" numerical ",
-			"div":" numerical mobile-hidden",
-			"roi":" change numerical mobile-hidden",
-			"roi_perc":" change numerical ",
-			"basis":" numerical ",
-			"price":" numerical ",
-			"change":" change numerical ",
-			"change_perc":" change numerical mobile-hidden",
-			"last_updated":" numerical mobile-hidden",
-		};
+		var headers = [
+			{"label":"symbol","classes":"uppercase"},
+			{"label":"shares","classes":"numerical mobile-hidden"},
+			{"label":"invested","classes":"numerical"},
+			{"label":"value","classes":"numerical"},
+			{"label":"div","classes":"numerical mobile-hidden"},
+			{"label":"roi","classes":"change numerical mobile-hidden"},
+			{"label":"roi perc","classes":"change numerical"},
+			{"label":"basis","classes":"numerical"},
+			{"label":"price","classes":"numerical"},
+			{"label":"change","classes":"change numerical"},
+			{"label":"change perc","classes":"change numerical mobile-hidden"},
+			{"label":"last updated","classes":"numerical mobile-hidden"}
+		]
 		for(var i = 0; i < accounts.length; i++){
 			var holder = accounts[i].holder;
 			for(var ii = 0; ii < accounts[i].types.length; ii++){
 				type = accounts[i].types[ii];
-				generate_standard_table(holder+'-'+type, type, accounts[i][accounts[i].types[ii]], attribute_formats, true);
+				generateSortableTable("#"+holder+'-'+type,type,headers,accounts[i][accounts[i].types[ii]],true);
 			}
 		}
 	});

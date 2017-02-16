@@ -41,6 +41,10 @@
 			height:400px;
 			width: 295px;;
 		}
+		#archon{
+			height:400px;
+			width: 310px;;
+		}
 		#image_overlay-container{
 			position: absolute;
 			width:500px;
@@ -57,7 +61,8 @@
 		}
 	</style>
 	<body>
-		<div id="jona_lisa-container" class="container">
+		<div id="king_queen-container" class="container">
+			<img id="archon" src="assets/img/archon.jpg">
 			<img id="jona_lisa" src="assets/img/jona_lisa.jpg">
 		</div>
 		<div id="quote-container" class="container">

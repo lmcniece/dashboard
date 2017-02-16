@@ -1,3 +1,14 @@
+//isNull Function
+function isNull(e){
+    return (e==null || e==undefined || String(e).toUpperCase()=="NULL" || e=="" || String(e).toUpperCase()=="UNDEFINED");
+}
+
+//Rounding Function
+function round(val, decimalPlaces) {
+    var multiplier = Math.pow(10, decimalPlaces);
+    return (Math.round(val * multiplier) / multiplier).toFixed(decimalPlaces);
+}
+
 //Cookie Set
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -27,17 +38,6 @@ date_iso = function(date){
 	return $.datepicker.formatDate('yy-mm-dd', date);
 }
 
-//isNull Function
-function isNull(e){
-    return (e==null || e==undefined || String(e).toUpperCase()=="NULL" || e=="" || String(e).toUpperCase()=="UNDEFINED");
-}
-
-//Rounding Function
-function round(val, decimalPlaces) {
-    var multiplier = Math.pow(10, decimalPlaces);
-    return (Math.round(val * multiplier) / multiplier).toFixed(decimalPlaces);
-}
-
 //Colorize Deltas
 function color_delta(selector){
 	$(selector).each(function(){
@@ -57,7 +57,7 @@ function color_delta(selector){
 
 //Standard Table Generator
 function generate_standard_table(tab, table_name, data, attribute_formats, has_total){
-	$('#'+tab+' #'+table_name+' .content-table').remove();
+	//$('#'+table_name).remove();
 	if(!isNull(data)){
 		var columns = Object.keys(data[0]).length;
 		//Clear and Generate Content-Table
@@ -95,19 +95,30 @@ function generate_standard_table(tab, table_name, data, attribute_formats, has_t
 }
 
 //Takes an array of header strings and a body string to generate a sortable table
-var generateSortableTable = function(headers,data,id){
+var generateSortableTable = function(location,table_id,headers,data,total_flag){
 	var header_string = "";
 	var table_body_string = "";
-	global_date = data;
 	for(var i=0;i<headers.length;i++){
 		header_string += "<th>"+headers[i].label+"</th>";
 	}
 	for(var i=0;i<data.length;i++){
+		if(total_flag==true && i==data.length-1){
+			table_body_string += "<tfoot>"
+		}
 		table_body_string += "<tr>";
 		for(var ii=0;ii<Object.keys(data[i]).length;ii++){
-			table_body_string += '<td class="'+headers[ii].classes+'">'+data[i][Object.keys(data[i])[ii]]+"</td>";
+			var value = "";
+			if(!isNull(data[i][Object.keys(data[i])[ii]])){
+				value = data[i][Object.keys(data[i])[ii]];
+			}
+			table_body_string += '<td class="'+headers[ii].classes+'">'+value+"</td>";
 		}
 		table_body_string += "</tr>";
+		if(total_flag==true && i==data.length-1){
+			table_body_string += "</tfoot>"
+		}
 	}
-	return '<table id="'+id+'" class="table sortable table-bordered table-hover table-striped table-condensed content-table"><thead>'+header_string+"</thead><tbody>"+table_body_string+"</tbody></table>";
+	var table_string = '<table id="'+table_id+'" class="table sortable table-bordered table-hover table-condensed content-table"><thead>'+header_string+"</thead><tbody>"+table_body_string+"</tbody></table>";
+	$(location).append(table_string);
+	$.bootstrapSortable();
 }

@@ -67,16 +67,14 @@ var get_expense_data = function(){
 		}
 	})
 	.done(function(data){
-		var headers = [
-			{"label":"category","classes":"uppercase"},
-			{"label":"expected","classes":"numerical"},
-			{"label":"actual","classes":"numerical"},
-			{"label":"delta","classes":"change numerical"}
-		]
+			var headers = [
+				{"label":"category","classes":"uppercase"},
+				{"label":"expected","classes":"numerical"},
+				{"label":"actual","classes":"numerical"},
+				{"label":"delta","classes":"change numerical"}
+			]
 		var data = $.parseJSON(data);
-		var table = generateSortableTable(headers, data, "expenses-table");
-		$("#budget").append(table);
-		$.bootstrapSortable();
+		var table = generateSortableTable("#budget","expenses-table",headers,data,true);
 		get_monthly_transactions();
 	});
 }
@@ -97,15 +95,15 @@ var get_monthly_transactions = function(){
 		}
 	})
 	.done(function(data){
-		var attribute_formats = {
-			"account":" uppercase ",
-			"amount":" numerical change ",
-			"category":" uppercase centered ",
-			"type":" uppercase centered ",
-			"date":" centered "
-		};
+		var headers = [
+			{"label":"account","classes":"uppercase"},
+			{"label":"amount","classes":"numerical change"},
+			{"label":"category","classes":"uppercase centered"},
+			{"label":"type","classes":"uppercase centered"},
+			{"label":"date","classes":"centered"}
+		];
 		var data = $.parseJSON(data);
-		generate_standard_table('budget', 'transactions', data, attribute_formats, false);
+		generateSortableTable('#budget','#transactions',headers,data,false);
 	});
 }
 
@@ -147,18 +145,12 @@ var insert_transaction = function(account, amount, type, date, category){
 	});
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////  EVENT HANDLERS  /////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Click on submit buttons triggers form submit
 $('#transaction-entry-modal').on('click','#submit-new-transaction', insert_transaction_handler);
-
-//Blank out all input boxes on click
-$('body').on("click", '.fresh-input', function(){
-	$(this).val('');
-});
 
 //Controls Month Selection and Data Pull
 $('#budget-month-retreat').on('click', function(){

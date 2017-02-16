@@ -42,13 +42,13 @@
 				</div>
 				<div class="modal-body">
 					<div id="transaction-account-autocomplete" class="form-group">
-						<input id="transaction-account" class="form-control fresh-input" type="text" placeholder="Transaction Account">
+						<input id="transaction-account" class="form-control" type="text" placeholder="Transaction Account">
 					</div>
 					<div id="transaction-category-autocomplete" class="form-group">
-						<input id="transaction-category" class="form-control fresh-input" type="text" placeholder="Account Tag">
+						<input id="transaction-category" class="form-control" type="text" placeholder="Account Tag">
 					</div>
 					<div class="form-group">
-						<input type="number" id="transaction-amount" class="form-control fresh-input" placeholder="0.00">
+						<input type="number" id="transaction-amount" class="form-control" placeholder="0.00">
 						<input type="date" id="transaction-date" class="form-control">
 						<select class="form-control" id="transaction-type">
 							<option value="debit">Debit</option>
@@ -102,7 +102,7 @@ function notification_modal(notification){
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<input type="number" id="bank-amount" class="form-control fresh-input" placeholder="0.00">
+						<input type="number" id="bank-amount" class="form-control" placeholder="0.00">
 						<button id="submit-bank-edit" class="form-control" data-dismiss="modal">Submit</button>
 					</div>
 				</div>

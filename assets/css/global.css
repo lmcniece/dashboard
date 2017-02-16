@@ -37,6 +37,7 @@
 		margin-top:25%;
 	}
 }
+
 /*Uncategorized*/
 #cash-edit{
 	padding: 0 0 0 0;
@@ -90,6 +91,10 @@ img.logo{
 .content-table td{
 	max-width:50px;
 	font-size:80%;
+	background-color:#111;
+}
+.content-table tfoot td{
+	color: #aa0;
 }
 @media (min-width: 768px) {
 	body .content-table td, body .content-table th{
