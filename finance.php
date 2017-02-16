@@ -4,11 +4,12 @@
 	<title><?php echo $project_name ?></title>
 	<head>
 		<link rel="stylesheet" type="text/css" href="assets/css/global.css">
-		<link rel="icon" type="image/png" href="static/img/favicon48.png">
+		<link rel="icon" type="image/png" href="assets/img/favicon48.png">
 		<!--Standard Script Includes-->
 		<script src="assets/lib/jquery-2.1.4.min.js"></script>
 		<script src="assets/lib/jquery-ui.js"></script>
 		<script src="assets/lib/bootstrap.js"></script>
+		<script src="assets/lib/bootstrap-sortable.js"></script>
 		<script src="js/global_vars_funcs.js"></script>
 		<!--Vector Map Includes-->
 		<script src="assets/lib/jquery-jvectormap-2.0.4.min.js"></script>
@@ -19,10 +20,11 @@
 		<link rel="stylesheet" type="text/css" href="assets/css/jquery-jvectormap-2.0.4.css">
 		<!--Standard Style Includes-->
 		<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/bootstrap-sortable.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+		
 	</head>
-<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////  STATIC NAVBAR  ////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+	<!-- Nav Bar -->
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 		  <div class="navbar-header">
@@ -44,20 +46,18 @@
 		  </div>
 		</div>
 	</nav>
-<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////  MAIN CONTENT  /////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+	<!-- Main Content -->
 	<body>	
 		<div class="container">
 			<div id="loading_container">
-				<img id="loading_spinner" src="static/img/progress.gif">
+				<img id="loading_spinner" src="assets/img/progress.gif">
 				<button id="loading-cancel">Cancel</button>
 			</div>
 			<div id="site-content" class="tab-content">
 				<div id="portfolio" class="tab-pane fade active in">
-					<h1 class="page-header DT_page-header block_center">
+					<h1 class="page-header">
 						<span class="emphasize">
-							Portfolio <img id="update-portfolio" class="icon" src="./static/img/refresh.png">
+							Portfolio <i id="update-portfolio" class="fa fa-refresh" aria-hidden="true"></i>
 						</span>
 					</h1>
 					<div id="map-container"></div>
@@ -67,26 +67,37 @@
 					<div id="portfolio-content" class="tab-content"></div>
 				</div>
 				<div id="budget" class="tab-pane fade">
+					<h1 class="page-header">
+						<span class="emphasize">Budget</span>
+					</h1>
 					<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#transaction-entry-modal">
 						New Transaction
 					</button>
 					<h1>
 					<nav>
 						<ul class="pager">
-							<li><span id="budget-month-retreat" class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></li>
+							<li><i id="budget-month-retreat" class="fa fa-step-backward" aria-hidden="true"></i></li>
 							<span id="budget-month"></span>
-							<li><span id="budget-month-advance" class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></li>
+							<li><i id="budget-month-advance" class="fa fa-step-forward" aria-hidden="true"></i></li>
 					  </ul>
 					</nav>
 					</h1>
 				</div>
-				<div id="cashflow" class="tab-pane fade"></div>
-				<div id="loans" class="tab-pane fade"></div>
+				<div id="cashflow" class="tab-pane fade">
+					<h1 class="page-header">
+						<span class="emphasize">Cashflow</span>
+					</h1>
+				</div>
+				<div id="loans" class="tab-pane fade">
+					<h1 class="page-header">
+						<span class="emphasize">Loans</span>
+					</h1>
+				</div>
 			</div>
 		</div>
 		
-		<!-- MODALS! -->
-		<?php include 'static/php/modals.php';?>
+		<!-- Modals -->
+		<?php include 'assets/templates/modals.php';?>
 	</body>
 </html>
 

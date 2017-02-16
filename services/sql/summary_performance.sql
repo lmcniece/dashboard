@@ -5,7 +5,7 @@ SELECT
 	round(per.current_value,2) as current_value,
 	round(coalesce(div.amount,0) + per.current_value-(coalesce(his.cost_basis,0)+per.cost_basis),2) as roi
 FROM
-        (
+    (
 	SELECT
 		holder, 
 		type,

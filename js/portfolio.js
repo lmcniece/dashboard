@@ -168,7 +168,7 @@ var update_portfolio = function (){
 			var holder = accounts[i].holder;
 			for(var ii = 0; ii < accounts[i].types.length; ii++){
 				type = accounts[i].types[ii];
-				generateSortableTable("#"+holder+'-'+type,type,headers,accounts[i][accounts[i].types[ii]],true);
+				generateSortableTable("#"+holder+'-'+type,holder+"-"+type+"-content",headers,accounts[i][accounts[i].types[ii]],true);
 			}
 		}
 	});
@@ -236,7 +236,7 @@ $('#chart-container').on('click', '#update-chart', function(){
 	update_stock_chart(symbol);
 });
 
-$('#portfolio-content').on('click', 'div:not(#summary-content).tab-content .row:not(.header-row):not(.title-row)', function(){
+$('#portfolio-content').on('click', 'tbody tr', function(){
 	var symbol = $(this).children("td").eq(0).html();
 	update_stock_chart(symbol);
 	$('#stock-chart-modal').modal('show');

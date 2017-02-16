@@ -1540,6 +1540,7 @@ a.bg-danger:focus {
   background-color: #e4b9b9;
 }
 .page-header {
+  padding-left: 10px;
   padding-bottom: 9px;
   margin: 0 0 20px;
   border-bottom: 1px solid #eee;
@@ -2425,8 +2426,6 @@ th {
 .table > colgroup + thead > tr:first-child > td,
 .table > thead:first-child > tr:first-child > td {
   border-top: 0;
-  background-color: #111;
-  border-bottom: 1px solid #FFB500;
 }
 .table > tbody + tbody {
   border-top: 2px solid #ddd;

@@ -23,22 +23,11 @@
 	padding:10px 0 10px 0;
 	background-color:#333;
 }
-@media (min-width: 768px){
-	#loading_spinner{
-		width: 30%;
-		position: fixed;
-		left: 35%;
-		top:25%;
-	}
-	#loading-cancel{
-		width: 30%;
-		left: 35%;
-		top:25%;
-		margin-top:25%;
-	}
-}
 
 /*Uncategorized*/
+.navbar-header{
+	padding-left: 10px;
+}
 #cash-edit{
 	padding: 0 0 0 0;
 	cursor: pointer;
@@ -60,58 +49,35 @@
 .x3n_header img.logo{
     margin-bottom: 3px; 
 }
-img.logo{
-    width:25px;
-    cursor:pointer;
-}
-.icon{
-	height:32px;
+.fa{
 	cursor:pointer;
-}
-.glyphicon-chevron-right{
-	cursor:pointer;
-}
-.glyphicon-chevron-left{
-	cursor:pointer;
+	font-size: 1em;
 }
 #budget-month{
 	display: inline-block;
     width: 200px;
 }
 
-
-/*------------ Content Table -------------*/
+/* Content Table */
 .content-table{
-	margin-top:20px;
 	color:#ccc;
 }
-.content-table tr{
-	font-size:90%;
+.content-table td,.content-table th{
+	font-size:60%;
 }
 .content-table td{
-	max-width:50px;
-	font-size:80%;
 	background-color:#111;
 }
 .content-table tfoot td{
 	color: #aa0;
 }
-@media (min-width: 768px) {
-	body .content-table td, body .content-table th{
-		max-width:5000px;	
-		font-size:100%;
-	}
-	body .content-table .mobile-hidden{
-		display:table-cell;
-	}
-}
 .content-table th{
 	text-transform: uppercase;
 	color: #FFB500;
-	font-size: 70%;
+	background-color: #000;
 	text-align: center;
 }
-.content-table tr:not(.header-row):not(.title-row){
+#portfolio-content tbody{
 	cursor:pointer;
 }
 
@@ -145,9 +111,6 @@ td.uppercase{
 .content-table tr.total-row{
 	color: #fff;
 }
-/*------------ End Content Table -------------*/
-
-
 
 /*Charts amd Maps Controls*/
 .form-group{
@@ -175,7 +138,6 @@ td.uppercase{
 	display:inline-block;
 	margin-left:5px; 
 }
-/*End Chart Form Controls*/
 
 /*Modal Objects*/
 .modal-btn{
@@ -197,4 +159,25 @@ td.uppercase{
 	font-size:1.5em;
 	top:20%;
 }
-/*End Modal Objects*/
+
+/*Media Queries*/
+@media screen and (min-width:768px){
+	#loading_spinner{
+		width: 30%;
+		position: fixed;
+		left: 35%;
+		top:25%;
+	}
+	#loading-cancel{
+		width: 30%;
+		left: 35%;
+		top:25%;
+		margin-top:25%;
+	}
+	.content-table td,.content-table th{
+		font-size:100%;
+	}
+	.content-table .mobile-hidden{
+		display:table-cell;
+	}
+}

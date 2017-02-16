@@ -103,7 +103,7 @@ var get_monthly_transactions = function(){
 			{"label":"date","classes":"centered"}
 		];
 		var data = $.parseJSON(data);
-		generateSortableTable('#budget','#transactions',headers,data,false);
+		generateSortableTable('#budget','transactions',headers,data,false);
 	});
 }
 

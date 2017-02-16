@@ -96,29 +96,37 @@ function generate_standard_table(tab, table_name, data, attribute_formats, has_t
 
 //Takes an array of header strings and a body string to generate a sortable table
 var generateSortableTable = function(location,table_id,headers,data,total_flag){
-	var header_string = "";
+	$("#"+table_id).remove();
+	var table_header_string = "";
 	var table_body_string = "";
+	var table_footer_string = "";
+	//Generate Header
 	for(var i=0;i<headers.length;i++){
-		header_string += "<th>"+headers[i].label+"</th>";
+		table_header_string += '<th class="'+headers[i].classes+'">'+headers[i].label+"</th>";
 	}
-	for(var i=0;i<data.length;i++){
-		if(total_flag==true && i==data.length-1){
-			table_body_string += "<tfoot>"
+	//Generate Footer
+	if(total_flag==true){
+		var last_index = data.length-1;
+		for(var i=0;i<Object.keys(data[last_index]).length;i++){
+			var value = "";
+			if(!isNull(data[last_index][Object.keys(data[last_index])[i]])){
+				value = data[last_index][Object.keys(data[last_index])[i]];
+			}
+			table_footer_string += '<td class="'+headers[i].classes+'">'+value+"</td>";
 		}
+	}
+	//Generate Body
+	var exclude_last = 0;
+	if(total_flag==true){exclude_last = 1;}
+	for(var i=0;i<data.length-exclude_last;i++){
 		table_body_string += "<tr>";
 		for(var ii=0;ii<Object.keys(data[i]).length;ii++){
-			var value = "";
-			if(!isNull(data[i][Object.keys(data[i])[ii]])){
-				value = data[i][Object.keys(data[i])[ii]];
-			}
-			table_body_string += '<td class="'+headers[ii].classes+'">'+value+"</td>";
+			table_body_string += '<td class="'+headers[ii].classes+'">'+data[i][Object.keys(data[i])[ii]]+"</td>";
 		}
 		table_body_string += "</tr>";
-		if(total_flag==true && i==data.length-1){
-			table_body_string += "</tfoot>"
-		}
 	}
-	var table_string = '<table id="'+table_id+'" class="table sortable table-bordered table-hover table-condensed content-table"><thead>'+header_string+"</thead><tbody>"+table_body_string+"</tbody></table>";
+	var table_string = '<div class="container"><table id="'+table_id+'" class="table sortable table-bordered table-hover table-condensed table-striped content-table"><thead>'+table_header_string+"</thead><tfoot>"+table_footer_string+"</tfoot><tbody>"+table_body_string+"</tbody></table></div>";
 	$(location).append(table_string);
 	$.bootstrapSortable();
+	color_delta('.change');
 }
