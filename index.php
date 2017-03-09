@@ -81,7 +81,7 @@
 <script>
 
 function openDays(){
-	var endtime = "Fri Mar 16 2017 00:00:00 GMT-0600 (Central Standard Time)";
+	var endtime = "Thr Mar 15 2017 00:00:00 GMT-0600 (Central Standard Time)";
 	var t = Date.parse(endtime) - Date.parse(new Date());
 	var days_remaining = Math.floor(t / (1000 * 60 * 60 * 24));
 	for(var i=days_remaining;i<41;i++){
