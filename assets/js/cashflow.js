@@ -14,8 +14,25 @@ var get_net_worth = function(){
 		}
 	})
 	.done(function(data){
-		net_worth = $.parseJSON(data)[0].net_worth;
-		$('#cashflow').prepend("<div>Networth: "+net_worth+'</div>');
+		var assets = $.parseJSON(data)[0];
+		$('#cashflow').prepend(
+			'<table id="assets" class="table table-bordered">'+
+				"<tr>"+
+					"<th>Capital Investments</th>"+
+					"<th>ESPP Escrow</th>"+
+					"<th>HSA Account</th>"+
+					"<th>Loans Outstanding</th>"+
+					"<th>Networth</th>"+
+				"<tr>"+
+				"</tr>"+
+					'<td style="color:#0b0">'+assets.capital_investments+"</td>"+
+					'<td style="color:#0b0">'+assets.espp_escrow+"</td>"+
+					'<td style="color:#0b0">'+assets.hsa+"</td>"+
+					'<td style="color:#f00">'+assets.loans_outstanding+"</td>"+
+					'<td style="color:#eee">'+assets.net_worth+"</td>"+
+				"</tr>"+
+			"</table>"
+		);
 		get_bill_data();
 	});
 }

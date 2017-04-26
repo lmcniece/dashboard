@@ -10,13 +10,13 @@
 		<script src="assets/lib/jquery-ui.js"></script>
 		<script src="assets/lib/bootstrap.js"></script>
 		<script src="assets/lib/bootstrap-sortable.js"></script>
-		<script src="js/global_vars_funcs.js"></script>
+		<script src="assets/js/global_vars_funcs.js"></script>
 		<!--Vector Map Includes-->
 		<script src="assets/lib/jquery-jvectormap-2.0.4.min.js"></script>
 		<script src="assets/lib/jquery-jvectormap-north_america-mill.js"></script>
 		<script src="assets/lib/jquery-jvectormap-europe-mill.js"></script>
 		<script src="assets/lib/jquery-jvectormap-asia-mill.js"></script>
-		<script src="js/jvectormap_maker.js"></script>
+		<script src="assets/js/jvectormap_maker.js"></script>
 		<link rel="stylesheet" type="text/css" href="assets/css/jquery-jvectormap-2.0.4.css">
 		<!--Standard Style Includes-->
 		<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
@@ -103,10 +103,10 @@
 
 <!--Post Load Includes-->
 <!--Main JS-->
-<script src="js/portfolio.js"></script>
-<script src="js/budget.js"></script>
-<script src="js/cashflow.js"></script>
-<script src="js/loans.js"></script>
+<script src="assets/js/portfolio.js"></script>
+<script src="assets/js/budget.js"></script>
+<script src="assets/js/cashflow.js"></script>
+<script src="assets/js/loans.js"></script>
 <!--Loading Screen-->
 <script>
 <!--NavBar Fix-->

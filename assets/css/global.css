@@ -181,3 +181,12 @@ td.uppercase{
 		display:table-cell;
 	}
 }
+
+.indented{
+	margin-left:2em;
+}
+#assets{
+	margin-bottom:25px;
+	margin-top:20px;
+	background-color:#000;
+}
