@@ -78,25 +78,25 @@ var get_cashflow_data = function(){
 		//Generate Pay Period Object
 		pay_periods = [
 			{
-				pay_day : new Date(),
+				pay_date : new Date(),
 				income : 0,
 				expenses : 0,
 				delta : 0,
 				cashflow : 0
 			},{
-				pay_day : new Date(),
+				pay_date : new Date(),
 				income : cashflow.payroll,
 				expenses : 0,
 				delta : 0,
 				cashflow : 0
 			},{
-				pay_day : new Date(),
+				pay_date : new Date(),
 				income : (cashflow.payroll * 2).toFixed(2),
 				expenses : 0,
 				delta : 0,
 				cashflow : 0
 			},{
-				pay_day : new Date(),
+				pay_date : new Date(),
 				income : (cashflow.payroll * 3).toFixed(2),
 				expenses : 0,
 				delta : 0,
@@ -106,15 +106,15 @@ var get_cashflow_data = function(){
 
 		var today = new Date();
 		if(today<15 || 30<today){
-			pay_periods[0].pay_day.setDate(15);
-			pay_periods[1].pay_day.setDate(30);
-			pay_periods[2].pay_day.setDate(15); pay_periods[2].pay_day.setMonth(today.getMonth()+1);
-			pay_periods[3].pay_day.setDate(30); pay_periods[3].pay_day.setMonth(today.getMonth()+1);
+			pay_periods[0].pay_date.setDate(15);
+			pay_periods[1].pay_date.setDate(30);
+			pay_periods[2].pay_date.setDate(15); pay_periods[2].pay_date.setMonth(today.getMonth()+1);
+			pay_periods[3].pay_date.setDate(30); pay_periods[3].pay_date.setMonth(today.getMonth()+1);
 		}else{
-			pay_periods[0].pay_day.setDate(30);
-			pay_periods[1].pay_day.setDate(15); pay_periods[1].pay_day.setMonth(today.getMonth()+1);
-			pay_periods[2].pay_day.setDate(30); pay_periods[2].pay_day.setMonth(today.getMonth()+1);
-			pay_periods[3].pay_day.setDate(15); pay_periods[3].pay_day.setMonth(today.getMonth()+2);
+			pay_periods[0].pay_date.setDate(30);
+			pay_periods[1].pay_date.setDate(15); pay_periods[1].pay_date.setMonth(today.getMonth()+1);
+			pay_periods[2].pay_date.setDate(30); pay_periods[2].pay_date.setMonth(today.getMonth()+1);
+			pay_periods[3].pay_date.setDate(15); pay_periods[3].pay_date.setMonth(today.getMonth()+2);
 		}
 
 		for(var i = 0; i < pay_periods.length; i++){
@@ -122,11 +122,11 @@ var get_cashflow_data = function(){
 				bills[ii].current_due_date = new Date(today.getFullYear(), today.getMonth(), bills[ii].due_day);
 				bills[ii].next_due_date = new Date(today.getFullYear(), today.getMonth()+1, bills[ii].due_day);
 				//Add bill amount if coming due
-				if((bills[ii].current_due_date > today && bills[ii].current_due_date <= pay_periods[i].pay_day)){
+				if((bills[ii].current_due_date > today && bills[ii].current_due_date <= pay_periods[i].pay_date)){
 					pay_periods[i].expenses += Number(bills[ii].amount);
 				}
 				//Add bill if coming due next rotation
-				if(bills[ii].next_due_date > today && bills[ii].next_due_date <= pay_periods[i].pay_day){
+				if(bills[ii].next_due_date > today && bills[ii].next_due_date <= pay_periods[i].pay_date){
 					pay_periods[i].expenses += Number(bills[ii].amount);
 				}
 			}
