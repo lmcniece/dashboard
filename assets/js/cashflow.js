@@ -51,9 +51,9 @@ var get_bill_data = function(){
 		bills = $.parseJSON(data);
 		//Generate Content-Table
 		var attribute_formats = {
-			"account":" uppercase ",
-			"amount":" numerical ",
-			"due_day":" numerical "
+			account:" uppercase ",
+			amount:" numerical ",
+			due_day:" numerical "
 		};
 		generate_standard_table('cashflow', 'bills', bills, attribute_formats, false);
 		get_cashflow_data();
@@ -74,81 +74,79 @@ var get_cashflow_data = function(){
 				'<span id=cash-edit data-toggle="modal" data-target="#bank-edit-modal">&#x2699</span>'+
 			'</div>'
 		);
-		
+
 		//Generate Pay Period Object
-		var initial_pay_date = new Date('2015','00','09');
-		var two_weeks_ms = 14 * 86400000;
 		pay_periods = [
 			{
-				pay_period : new Date(initial_pay_date.getTime()),
-				"income" : 0,
-				"expenses" : 0,
-				"delta" : 0,
-				"cashflow" : 0
+				pay_day : new Date(),
+				income : 0,
+				expenses : 0,
+				delta : 0,
+				cashflow : 0
 			},{
-				pay_period : new Date(initial_pay_date.getTime()),
-				"income" : cashflow.payroll,
-				"expenses" : 0,
-				"delta" : 0,
-				"cashflow" : 0
+				pay_day : new Date(),
+				income : cashflow.payroll,
+				expenses : 0,
+				delta : 0,
+				cashflow : 0
 			},{
-				pay_period : new Date(initial_pay_date.getTime()),
-				"income" : (cashflow.payroll * 2).toFixed(2),
-				"expenses" : 0,
-				"delta" : 0,
-				"cashflow" : 0
+				pay_day : new Date(),
+				income : (cashflow.payroll * 2).toFixed(2),
+				expenses : 0,
+				delta : 0,
+				cashflow : 0
 			},{
-				pay_period : new Date(initial_pay_date.getTime()),
-				"income" : (cashflow.payroll * 3).toFixed(2),
-				"expenses" : 0,
-				"delta" : 0,
-				"cashflow" : 0
+				pay_day : new Date(),
+				income : (cashflow.payroll * 3).toFixed(2),
+				expenses : 0,
+				delta : 0,
+				cashflow : 0
 			}
 		];
-		pay_periods[0].pay_period.setTime(
-			two_weeks_ms*(
-				Math.floor(
-					(today.getTime()-initial_pay_date.getTime())
-					/
-					two_weeks_ms
-				)
-			)
-			+ initial_pay_date.getTime()
-			+ two_weeks_ms
-		);
-		pay_periods[1].pay_period.setTime(pay_periods[0].pay_period.getTime()+two_weeks_ms);
-		pay_periods[2].pay_period.setTime(pay_periods[1].pay_period.getTime()+two_weeks_ms);
-		pay_periods[3].pay_period.setTime(pay_periods[2].pay_period.getTime()+two_weeks_ms);
+
+		var today = new Date();
+		if(today<15 || 30<today){
+			pay_periods[0].pay_day.setDate(15);
+			pay_periods[1].pay_day.setDate(30);
+			pay_periods[2].pay_day.setDate(15); pay_periods[2].pay_day.setMonth(today.getMonth()+1);
+			pay_periods[3].pay_day.setDate(30); pay_periods[3].pay_day.setMonth(today.getMonth()+1);
+		}else{
+			pay_periods[0].pay_day.setDate(30);
+			pay_periods[1].pay_day.setDate(15); pay_periods[1].pay_day.setMonth(today.getMonth()+1);
+			pay_periods[2].pay_day.setDate(30); pay_periods[2].pay_day.setMonth(today.getMonth()+1);
+			pay_periods[3].pay_day.setDate(15); pay_periods[3].pay_day.setMonth(today.getMonth()+2);
+		}
+
 		for(var i = 0; i < pay_periods.length; i++){
 			for(var ii = 0; ii < bills.length; ii++){
 				bills[ii].current_due_date = new Date(today.getFullYear(), today.getMonth(), bills[ii].due_day);
 				bills[ii].next_due_date = new Date(today.getFullYear(), today.getMonth()+1, bills[ii].due_day);
 				//Add bill amount if coming due
-				if((bills[ii].current_due_date > today && bills[ii].current_due_date <= pay_periods[i].pay_period)){
+				if((bills[ii].current_due_date > today && bills[ii].current_due_date <= pay_periods[i].pay_day)){
 					pay_periods[i].expenses += Number(bills[ii].amount);
 				}
 				//Add bill if coming due next rotation
-				if(bills[ii].next_due_date > today && bills[ii].next_due_date <= pay_periods[i].pay_period){
+				if(bills[ii].next_due_date > today && bills[ii].next_due_date <= pay_periods[i].pay_day){
 					pay_periods[i].expenses += Number(bills[ii].amount);
 				}
 			}
 			pay_periods[i].delta = round(pay_periods[i].income - pay_periods[i].expenses,2);
 			pay_periods[i].expenses = round(pay_periods[i].expenses,2);
 			pay_periods[i].cashflow = round(Number(cashflow.bank) + Number(pay_periods[i].delta),2);
-			pay_periods[i].pay_period = date_iso(pay_periods[i].pay_period);
+			pay_periods[i].pay_date = date_iso(pay_periods[i].pay_date);
 		}
-		
+
 		//Generate Content Rows
 		var attribute_formats = {
-			"pay_period":" ",
-			"income":" numerical ",
-			"expenses":" numerical ",
-			"delta":" change numerical ",
-			"cashflow":" change numerical "
+			pay_period:" ",
+			income:" numerical ",
+			expenses:" numerical ",
+			delta:" change numerical ",
+			cashflow:" change numerical "
 		}
 		generate_standard_table('cashflow', 'pay-periods', pay_periods, attribute_formats, false);
 		get_annual_reports();
-	});	
+	});
 }
 
 

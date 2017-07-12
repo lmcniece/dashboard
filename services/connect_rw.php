@@ -9,4 +9,4 @@ $url = parse_url(getenv('DATABASE_URL'));
 $conn_string = "host=".$host." port=5432 dbname=".$db." user=".$user." password=".$pass;
 
 $con = pg_connect($conn_string);
-?> 
+?>
