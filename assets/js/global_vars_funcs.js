@@ -121,7 +121,7 @@ var generateSortableTable = function(location,table_id,headers,data,total_flag){
 	for(var i=0;i<data.length-exclude_last;i++){
 		table_body_string += "<tr>";
 		for(var ii=0;ii<Object.keys(data[i]).length;ii++){
-			table_body_string += '<td class="'+headers[ii].classes+'">'+data[i][Object.keys(data[i])[ii]]+"</td>";
+			table_body_string += '<td class="'+headers[ii].classes+'">'+data[i][Object.keys(data[i])[ii]].replace('_',' ','g')+"</td>";
 		}
 		table_body_string += "</tr>";
 	}
