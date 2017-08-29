@@ -86,7 +86,7 @@ function generate_standard_table(tab, table_name, data, attribute_formats, has_t
 			for(var attribute in data[i]){
 				var format_classes = attribute_formats[attribute];
 				var value = data[i][attribute] ? data[i][attribute] : '';
-				$('#'+tab+' #'+table_name+' .content-table .row').last().append('<td class="'+format_classes+'">'+value+'</td>')
+				$('#'+tab+' #'+table_name+' .content-table .row').last().append('<td class="'+format_classes+'">'+value.replace(/_/,' ','g')+'</td>')
 			}
 			$('#'+tab+' #'+table_name+' .content-table').append('</tr>');
 		}
