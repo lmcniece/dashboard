@@ -70,7 +70,7 @@
 <script>
 
 // Set the date we're counting down to
-var countDownDate = new Date("Dec 15, 2017 10:30:25").getTime();
+var countDownDate = new Date("Dec 15, 2017 13:30:25").getTime();
 
 // Update the count down every 1 second
 var x = setInterval(function() {
@@ -99,25 +99,14 @@ var x = setInterval(function() {
 }, 1000);
 
 function openDays(){
-	var endtime = new Date("Dec 15, 2017 10:30:25").getTime();
+	var endtime = new Date("Dec 15, 2017 13:30:25").getTime();
 	var t = endtime - Date.parse(new Date());
-	var days_remaining = Math.floor(t / (1000 * 60 * 60 * 24));
+	var days_remaining = Math.floor(t / (1000 * 60 * 60 * 24))+1;
 	for(var i=days_remaining;i<41;i++){
 		$("#cell-"+i).css("background","#aaa");
 		$("#cell-"+i).addClass("opened_day");
 		$("#cell-"+i).html('<img class="advent-image" src="assets/img/advent-imgs/'+i+'.gif">');
 	}
-	$(".opened_day" ).mouseover(function(){
-		$("#image_overlay-container").css("display","block");
-		$("#overlay").css("display","block");
-		$("#image_overlay-container").css("left",$( window ).width()/2-250);
-		$("#image_overlay-container").css("top",$(window).scrollTop()+50);
-		$("#image_overlay-container").html('<img class="advent-image" src="assets/img/advent-imgs/'+$(this).attr("image_num")+'.gif">');
-	});
-	$(".opened_day" ).mouseout(function(){
-		$("#image_overlay-container").css("display","none");
-		$("#overlay").css("display","none");
-	});
 }
 
 function generateTable(rows, columns, container){
